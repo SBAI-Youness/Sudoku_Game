@@ -1,0 +1,17 @@
+#pragma once
+
+#include "./config.h"
+
+#define GAME_NAME "Sudoku Game"
+
+// Function used to display the game name
+extern void display_game_name();
+
+// Function used to display the main menu
+extern void display_main_menu(uint8_t *main_menu_choice);
+
+// Function used to display the rules of the game
+extern void display_how_to_play();
+
+// Function used to display an invalid choice message
+extern void display_invalid_choice();
