@@ -3,12 +3,14 @@
 int main() {
   uint8_t main_menu_choice;
 
+  srand(time(NULL));
+
   do {
     display_main_menu(&main_menu_choice);
 
     switch (main_menu_choice) {
       case 1:
-        // New game
+        new_game();
         break;
       case 2:
         // Continue game

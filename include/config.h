@@ -2,10 +2,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <stdint.h>
+#include <time.h>
 #include <windows.h> // Even though I hate Windows (Microsoft), I have to use it for this project
 
 #include "./ui.h"
+#include "./sudoku.h"
 
 #define RESET       "\033[0m"
 #define RED         "\033[31m"
@@ -20,3 +23,6 @@
 // Text styles
 #define BOLD        "\033[1m"
 #define UNDERLINE   "\033[4m"
+
+// Function used to clear the input buffer
+extern void clear_input_buffer();

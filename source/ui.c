@@ -13,9 +13,28 @@ void display_main_menu(uint8_t *main_menu_choice) {
   printf("3. How to play\n");
   printf("4. Quit\n");
   printf(" >> ");
-  if (scanf("%hhu", &(*main_menu_choice)) != 1)
+
+  char extra;
+  if (scanf("%hhu%c", &(*main_menu_choice), &extra) != 2 || extra != '\n') {
     (*main_menu_choice) = 0;
-  rewind(stdin);
+    clear_input_buffer();
+  }
+}
+
+void display_game_mode_menu(uint8_t *game_mode_choice) {
+  display_game_name();
+
+  printf("1. Easy\n");
+  printf("2. Medium\n");
+  printf("3. Hard\n");
+  printf("4. Back\n");
+  printf(" >> ");
+
+  char extra;
+  if (scanf("%hhu%c", &(*game_mode_choice), &extra) != 2 || extra != '\n') {
+    (*game_mode_choice) = 0;
+    clear_input_buffer();
+  }
 }
 
 void display_how_to_play() {
@@ -40,5 +59,5 @@ void display_how_to_play() {
 
 void display_invalid_choice() {
   printf(ORANGE "Invalid choice. Please try again.\n" RESET);
-  Sleep(4);
+  Sleep(4000); // Wait for 4 seconds
 }
