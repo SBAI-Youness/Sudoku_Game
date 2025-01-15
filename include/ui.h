@@ -2,7 +2,7 @@
 
 #include "./config.h"
 
-# define GAME_NAME "Sudoku Game"
+#define GAME_NAME "Sudoku Game"
 
 // Function used to display the game name
 extern void display_game_name();

@@ -25,5 +25,6 @@ int main() {
         break;
     }
   } while (main_menu_choice != 4);
+
   return EXIT_SUCCESS;
 }

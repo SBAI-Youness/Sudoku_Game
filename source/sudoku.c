@@ -12,8 +12,8 @@ void new_game() {
       case 2:
       case 3:
         generate_sudoku_puzzle(grid, game_mode_choice);
-        save_sudoku_grid(grid);
-        display_sudoku_grid(grid);
+        save_sudoku_grid(grid, CURRENT_GAME_FILE);
+        play_game(grid);
         break;
       case 4: // Back
         break;
@@ -25,36 +25,91 @@ void new_game() {
 }
 
 void continue_game() {
-  uint8_t grid[GRID_SIZE][GRID_SIZE];
+}
 
-  // Open file for reading
-  FILE *file = fopen(SUDOKU_GRID_FILE, "r");
+void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
+  uint8_t solution[GRID_SIZE][GRID_SIZE];
 
-  // Check if file exists
-  if (file == NULL) {
-    fprintf(stderr, "Error: Could not open file!\n");
-    return;
-  }
+  load_sudoku_grid(solution, SOLUTION_FILE);
 
-  // Read grid from file
-  for (size_t row = 0; row < GRID_SIZE; row++)
-    for (size_t col = 0; col < GRID_SIZE; col++)
-      if (fscanf(file, "%hhu", &grid[row][col]) != 1) {
-        printf("\nError reading saved game!\n");
-        fclose(file);
-        system("pause");
+  uint8_t row, col, number;
+  int attempts = 3;
+  time_t start_time = time(NULL);
+
+  while (attempts > 0) {
+    // Display the sudoku grid
+    display_game_name();
+    display_sudoku_grid(grid);
+    printf("Attempts remaining: %d\n", attempts);
+
+    printf("Enter row (1-9): ");
+    scanf("%hhu", &row);
+    printf("Enter column (1-9): ");
+    scanf("%hhu", &col);
+    printf("Enter number (1-9): ");
+    scanf("%hhu", &number);
+
+    // Adjust for 0-based indexing
+    row--;
+    col--;
+
+    // Validate input
+    if (row >= GRID_SIZE || col >= GRID_SIZE || number < 1 || number > 9) {
+      printf("Invalid input! Please enter numbers between 1 and 9.\n");
+      Sleep(3000);
+      continue;
+    }
+
+    // Check if cell is empty
+    if (grid[row][col] != 0) {
+      printf("This cell is already filled!\n");
+      continue;
+    }
+
+    // Check if number is correct
+    if (solution[row][col] == number) {
+      grid[row][col] = number;
+      save_sudoku_grid(grid, CURRENT_GAME_FILE);
+
+      if (is_puzzle_solved(grid)) {
+        time_t end_time = time(NULL);
+        double time_spent = difftime(end_time, start_time);
+
+        display_game_name();
+        display_sudoku_grid(grid);
+        printf("\nCongratulations! You solved the puzzle!\n");
+
+        // Convert time to appropriate units
+        if (time_spent < 60) 
+          printf("Time taken: %.0f seconds\n", time_spent);
+        else if (time_spent < 3600) {
+          printf("Time taken: %.0f minutes and %.0f seconds\n", 
+          floor(time_spent/60), fmod(time_spent, 60));
+        }
+        else {
+          printf("Time taken: %.0f hours, %.0f minutes and %.0f seconds\n",
+          floor(time_spent/3600), 
+          floor(fmod(time_spent, 3600)/60),
+          fmod(time_spent, 60));
+        }
         return;
       }
+    }
+    else {
+      printf("Wrong number! Try again.\n");
+      attempts--;
 
-  // Close file
-  fclose(file);
-
-  // Display the sudoku grid
-  display_sudoku_grid(grid);
+      if (attempts == 0) {
+        printf("\nGame Over! You've run out of attempts.\n");
+        return;
+      }
+    }
+  }
 }
 
 void generate_sudoku_puzzle(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t difficulty) {
   fill_grid(grid);
+  save_sudoku_grid(grid, SOLUTION_FILE);
   remove_cells(grid, difficulty);
 }
 
@@ -146,6 +201,15 @@ bool is_valid(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t row, uint8_t col, uint
   return true; // Number is valid
 }
 
+bool is_puzzle_solved(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
+  for (size_t row = 0; row < GRID_SIZE; row++)
+    for (size_t col = 0; col < GRID_SIZE; col++)
+      if (grid[row][col] == 0)
+        return false;
+
+  return true;
+}
+
 void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
   printf("\n");
   printf("    1 2 3   4 5 6   7 8 9\n");  // Column numbers
@@ -170,14 +234,11 @@ void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
   }
 
   printf("  +-------+-------+-------+\n\n");
-
-  //! This is just for testing
-  system("pause");
 }
 
-void save_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
+void save_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE], const char *filename) {
   // Open the file for writing
-  FILE* file = fopen(SUDOKU_GRID_FILE, "w");
+  FILE* file = fopen(filename, "w");
 
   // Check if the file was opened successfully
   if (file == NULL) {
@@ -188,7 +249,7 @@ void save_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
   // Write the grid to the file
   for (size_t row = 0; row < GRID_SIZE; row++) {
     for (size_t col = 0; col < GRID_SIZE; col++) {
-      fprintf(file, "%d", grid[row][col]);
+      fprintf(file, "%hhu", grid[row][col]);
       if (col < GRID_SIZE - 1)
         fprintf(file, " "); // Add space between numbers
     }
@@ -196,5 +257,29 @@ void save_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
   }
 
   // Close the file
+  fclose(file);
+}
+
+void load_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE], const char *filename) {
+  // Open file for reading
+  FILE *file = fopen(filename, "r");
+
+  // Check if file exists
+  if (file == NULL) {
+    fprintf(stderr, "Error: Could not open file!\n");
+    return;
+  }
+
+  // Read grid from file
+  for (size_t row = 0; row < GRID_SIZE; row++)
+    for (size_t col = 0; col < GRID_SIZE; col++)
+      if (fscanf(file, "%hhu", &grid[row][col]) != 1) {
+        printf("\nError reading saved game!\n");
+        fclose(file);
+        system("pause");
+        return;
+      }
+
+  // Close file
   fclose(file);
 }
