@@ -11,6 +11,9 @@
 // Function used to start a new game
 extern void new_game();
 
+// Function used to continue a saved game
+extern void continue_game();
+
 // Function used to generate a randow sudoku puzzle
 extern void generate_sudoku_puzzle(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t difficulty);
 

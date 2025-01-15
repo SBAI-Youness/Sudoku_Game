@@ -13,7 +13,7 @@ int main() {
         new_game();
         break;
       case 2:
-        // Continue game
+        continue_game();
         break;
       case 3: // Display the rules of the game
         display_how_to_play();

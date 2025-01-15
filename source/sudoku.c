@@ -24,6 +24,35 @@ void new_game() {
   } while (game_mode_choice != 4); // Loop until the user chooses to go back to the main menu
 }
 
+void continue_game() {
+  uint8_t grid[GRID_SIZE][GRID_SIZE];
+
+  // Open file for reading
+  FILE *file = fopen(SUDOKU_GRID_FILE, "r");
+
+  // Check if file exists
+  if (file == NULL) {
+    fprintf(stderr, "Error: Could not open file!\n");
+    return;
+  }
+
+  // Read grid from file
+  for (size_t row = 0; row < GRID_SIZE; row++)
+    for (size_t col = 0; col < GRID_SIZE; col++)
+      if (fscanf(file, "%hhu", &grid[row][col]) != 1) {
+        printf("\nError reading saved game!\n");
+        fclose(file);
+        system("pause");
+        return;
+      }
+
+  // Close file
+  fclose(file);
+
+  // Display the sudoku grid
+  display_sudoku_grid(grid);
+}
+
 void generate_sudoku_puzzle(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t difficulty) {
   fill_grid(grid);
   remove_cells(grid, difficulty);
