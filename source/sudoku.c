@@ -117,12 +117,30 @@ bool is_valid(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t row, uint8_t col, uint
 }
 
 void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
-  for (size_t row = 0; row < GRID_SIZE; row++) {
-    for (size_t col = 0; col < GRID_SIZE; col++)
-      printf("%hhu ", grid[row][col]);
-    printf("\n");
-  }
+  printf("\n");
+  printf("    1 2 3   4 5 6   7 8 9\n");  // Column numbers
+  printf("  +-------+-------+-------+\n");
 
-  //! This is just for testing purposes
+  for (int row = 0; row < GRID_SIZE; row++) {
+    printf("%d ", row + 1);  // Row numbers
+
+    for (int col = 0; col < GRID_SIZE; col++) {
+      if (col % 3 == 0)
+        printf("| ");
+
+      if (grid[row][col] == 0)
+        printf(". ");
+      else
+        printf("%d ", grid[row][col]);
+    }
+    printf("|\n");
+
+    if ((row + 1) % 3 == 0 && row < GRID_SIZE - 1)
+      printf("  +-------+-------+-------+\n");
+  }
+  
+  printf("  +-------+-------+-------+\n\n");
+
+  //! This is just for testing
   system("pause");
 }
