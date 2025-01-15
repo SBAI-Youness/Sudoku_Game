@@ -12,6 +12,7 @@ void new_game() {
       case 2:
       case 3:
         generate_sudoku_puzzle(grid, game_mode_choice);
+        save_sudoku_grid(grid);
         display_sudoku_grid(grid);
         break;
       case 4: // Back
@@ -138,9 +139,33 @@ void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
     if ((row + 1) % 3 == 0 && row < GRID_SIZE - 1)
       printf("  +-------+-------+-------+\n");
   }
-  
+
   printf("  +-------+-------+-------+\n\n");
 
   //! This is just for testing
   system("pause");
+}
+
+void save_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
+  // Open the file for writing
+  FILE* file = fopen(SUDOKU_GRID_FILE, "w");
+
+  // Check if the file was opened successfully
+  if (file == NULL) {
+    fprintf(stderr, "Error: Could not create the grid file!\n");
+    return;
+  }
+
+  // Write the grid to the file
+  for (size_t row = 0; row < GRID_SIZE; row++) {
+    for (size_t col = 0; col < GRID_SIZE; col++) {
+      fprintf(file, "%d", grid[row][col]);
+      if (col < GRID_SIZE - 1)
+        fprintf(file, " "); // Add space between numbers
+    }
+    fprintf(file, "\n"); // New line after each row
+  }
+
+  // Close the file
+  fclose(file);
 }

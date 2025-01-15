@@ -2,6 +2,9 @@
 
 #include "./config.h"
 
+// Path to the saved game file
+#define SUDOKU_GRID_FILE "../saved_game/grid.txt"
+
 #define GRID_SIZE 9
 #define SUB_GRID_SIZE 3
 
@@ -22,3 +25,6 @@ extern bool is_valid(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t row, uint8_t co
 
 // Function used to display the sudoku grid
 extern void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]);
+
+// Function used to save the sudoku grid to a text file
+extern void save_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]);
