@@ -77,17 +77,35 @@ void display_how_to_play() {
 
 void display_invalid_choice() {
   printf(ORANGE "Invalid choice. Please try again.\n" RESET);
-  sleep(4); // Wait for 4 seconds
+  sleep(INVALID_DELAY);
 }
 
 void display_invalid_input() {
   printf(ORANGE "Invalid input! Please enter a number between 1 and 9.\n" RESET);
-  clear_input_buffer();
-  sleep(3);
+  sleep(INVALID_DELAY);
+  printf("\033[A\033[2K");
+  printf("\033[A\033[2K");
+}
+
+void display_congratulations(double time_spent) {
+  printf(GREEN "\nCongratulations! You solved the puzzle!\n" RESET);
+
+  // Convert time to appropriate units
+  if (time_spent < 60)
+    printf("Time taken: %.0f seconds\n", time_spent);
+  else if (time_spent < 3600)
+    printf("Time taken: %.0f minutes and %.0f seconds\n", floor(time_spent/60), fmod(time_spent, 60));
+  else
+    printf("Time taken: %.0f hours, %.0f minutes and %.0f seconds\n",
+           floor(time_spent/3600), 
+           floor(fmod(time_spent, 3600)/60),
+           fmod(time_spent, 60));
+
+  sleep(GAME_OVER_AND_CONGRATULATIONS_DELAY);
 }
 
 void display_game_over() {
   printf(RED "\nGame Over! You've run out of attempts.\n" RESET);
-  sleep(4);
+  sleep(GAME_OVER_AND_CONGRATULATIONS_DELAY);
   return;
 }

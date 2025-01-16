@@ -4,7 +4,7 @@
 
 #define GAME_NAME "Sudoku Game"
 
-// Function used to display the game name
+// Function used to display the game name underlined in blue and bold
 extern void display_game_name();
 
 // Function used to display the main menu and get the user's choice
@@ -21,6 +21,9 @@ extern void display_invalid_choice();
 
 // Function used to display a message indicating that the input is invalid
 extern void display_invalid_input();
+
+// Function used to display a message indicating that the game is over and the player has won
+extern void display_congratulations(double time_spent);
 
 // Function used to display a message indicating that the game is over
 extern void display_game_over();

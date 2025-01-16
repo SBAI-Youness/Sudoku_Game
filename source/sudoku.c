@@ -9,10 +9,10 @@ void sudoku_game() {
     display_main_menu(&main_menu_choice);
 
     switch (main_menu_choice) {
-      case 1:
+      case 1: // New game
         new_game();
         break;
-      case 2:
+      case 2: // Continue game
         continue_game();
         break;
       case 3: // Display the rules of the game
@@ -24,12 +24,12 @@ void sudoku_game() {
         display_invalid_choice();
         break;
     }
-  } while (main_menu_choice != 4);
+  } while (main_menu_choice != 4); // Loop until the user chooses to quit
 }
 
 void new_game() {
-  uint8_t game_mode_choice,
-          grid[GRID_SIZE][GRID_SIZE] = {0};
+  uint8_t game_mode_choice, // Variable to store the user's choice of game mode
+          grid[GRID_SIZE][GRID_SIZE] = {0}; // Initialize the grid with zeros
 
   do {
     display_game_mode_menu(&game_mode_choice);
@@ -37,10 +37,10 @@ void new_game() {
     switch (game_mode_choice) {
       case 1:
       case 2:
-      case 3:
-        generate_sudoku_puzzle(grid, game_mode_choice);
-        save_sudoku_grid(grid, CURRENT_GAME_FILE);
-        play_game(grid);
+      case 3: // Easy, Medium, Hard
+        generate_sudoku_puzzle(grid, game_mode_choice); // Generate a new and random sudoku puzzle
+        save_sudoku_grid(grid, CURRENT_GAME_FILE); // Save the puzzle to a file for later use
+        play_game(grid); // Play the game
         break;
       case 4: // Back
         break;
@@ -52,98 +52,79 @@ void new_game() {
 }
 
 void continue_game() {
-  uint8_t grid[GRID_SIZE][GRID_SIZE];
-
-  load_sudoku_grid(grid, CURRENT_GAME_FILE);
-
-  play_game(grid);
 }
 
 void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
-  uint8_t solution[GRID_SIZE][GRID_SIZE];
+  uint8_t solution[GRID_SIZE][GRID_SIZE]; // 2D array to store the solution of the sudoku puzzle
 
+  // Load the solution of the sudoku puzzle from a file
   load_sudoku_grid(solution, SOLUTION_FILE);
 
-  uint8_t row, col, number;
-  int attempts = 3;
-  time_t start_time = time(NULL);
+  uint8_t row, column, number; // Variables to store the user's input
+  char extra; // Variable to store the extra character after the user input
+  size_t attempts_left = 3; // Variable to store the number of attempts left
+  time_t start_time = time(NULL); // Variable to store the start time of the game
 
-  while (attempts > 0) {
-    // Display the sudoku grid
+  // Loop until the user solves the puzzle or runs out of attempts
+  while (attempts_left > 0) {
     display_game_name();
     display_sudoku_grid(grid);
-    printf("Attempts remaining: %d\n", attempts);
 
-    char extra;
+    printf("Attempts remaining:" ORANGE " %zu\n" RESET, attempts_left);
 
     // Input for Row
     printf("Enter row (1-9): ");
-    if (scanf("%hhu%c", &row, &extra) != 2 || extra != '\n' || row < 1 || row > GRID_SIZE) {
+    while (scanf("%hhu%c", &row, &extra) != 2 || extra != '\n' || row < 1 || row > GRID_SIZE) {
       display_invalid_input();
-      continue;
+      printf("Enter row (1-9): ");
     }
 
     // Input for Column
     printf("Enter column (1-9): ");
-    if (scanf("%hhu%c", &col, &extra) != 2 || extra != '\n' || col < 1 || col > GRID_SIZE) {
+    while (scanf("%hhu%c", &column, &extra) != 2 || extra != '\n' || column < 1 || column > GRID_SIZE) {
+      printf("Enter column (1-9): ");
       display_invalid_input();
-      continue;
     }
 
     // Adjust for zero-based indexing
     row--;
-    col--;
+    column--;
 
     // Check if cell is empty
-    if (grid[row][col] != 0) {
+    if (grid[row][column] != 0) {
       printf(ORANGE "This cell is already filled!\n" RESET);
-      sleep(3);
+      sleep(INVALID_DELAY);
       continue;
     }
 
     // Input for Number
     printf("Enter number (1-9): ");
-    if (scanf("%hhu%c", &number, &extra) != 2 || extra != '\n' || number < 1 || number > 9) {
+    while (scanf("%hhu%c", &number, &extra) != 2 || extra != '\n' || number < 1 || number > 9) {
       display_invalid_input();
-      continue;
+      printf("Enter number (1-9): ");
     }
 
     // Check if number is correct
-    if (solution[row][col] == number) {
-      grid[row][col] = number;
+    if (solution[row][column] == number) {
+      grid[row][column] = number;
       save_sudoku_grid(grid, CURRENT_GAME_FILE);
 
-      if (is_puzzle_solved(grid)) {
+      if (is_puzzle_solved(grid) == true) {
         time_t end_time = time(NULL);
         double time_spent = difftime(end_time, start_time);
 
         display_game_name();
         display_sudoku_grid(grid);
-        printf("\nCongratulations! You solved the puzzle!\n");
 
-        // Convert time to appropriate units
-        if (time_spent < 60) 
-          printf("Time taken: %.0f seconds\n", time_spent);
-        else if (time_spent < 3600) {
-          printf("Time taken: %.0f minutes and %.0f seconds\n", 
-          floor(time_spent/60), fmod(time_spent, 60));
-        }
-        else {
-          printf("Time taken: %.0f hours, %.0f minutes and %.0f seconds\n",
-          floor(time_spent/3600), 
-          floor(fmod(time_spent, 3600)/60),
-          fmod(time_spent, 60));
-        }
-        sleep(3);
-        return;
+        display_congratulations(time_spent);
       }
     }
     else {
       printf(ORANGE "Wrong number! Try again.\n" RESET);
-      sleep(3);
-      attempts--;
+      sleep(INVALID_DELAY);
+      attempts_left--;
 
-      if (attempts == 0)
+      if (attempts_left == 0)
         display_game_over();
     }
   }
@@ -157,17 +138,17 @@ void generate_sudoku_puzzle(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t difficul
 
 bool fill_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
   size_t row, col;
-  bool found_empty = false;
+  bool found_empty = false; // Flag to indicate if an empty cell was found
 
   // Find first empty cell
   for (row = 0; row < GRID_SIZE && found_empty == false; row++) {
     for (col = 0; col < GRID_SIZE && found_empty == false; col++)
       if (grid[row][col] == 0) {
-        found_empty = true;
-        break;
+        found_empty = true; // Set flag to true, because an empty cell was found
+        break; // Exit the inner loop
       }
     if (found_empty)
-      break;
+      break; // Exit the outer loop
   }
 
   // If no empty cell found, puzzle is complete

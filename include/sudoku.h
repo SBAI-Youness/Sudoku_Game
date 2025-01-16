@@ -8,7 +8,7 @@
 #define GRID_SIZE 9
 #define SUB_GRID_SIZE 3
 
-// Main function
+// Main function of the game
 extern void sudoku_game();
 
 // Function used to start a new game
@@ -23,7 +23,7 @@ extern void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]);
 // Function used to generate a randow sudoku puzzle
 extern void generate_sudoku_puzzle(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t difficulty);
 
-// Function used to fill a sudoku grid with random numbers using recursive backtracking
+// Function used to fill a sudoku grid with random numbers using the recursive backtracking algorithm
 extern bool fill_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]);
 
 // Function used to remove cells from a sudoku grid based on the difficulty level
