@@ -183,31 +183,35 @@ bool fill_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
 }
 
 void remove_cells(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t difficulty) {
-  size_t cells_to_remove;
+  // Map difficulty directly to cells to remove
+  static const size_t difficulty_map[] = {
+    0,                      // unused
+    CELLS_TO_REMOVE_EASY,   // difficulty 1
+    CELLS_TO_REMOVE_MEDIUM, // difficulty 2
+    CELLS_TO_REMOVE_HARD    // difficulty 3
+  };
 
-  switch (difficulty) {
-    case 1: // Easy
-      cells_to_remove = CELLS_TO_REMOVE_EASY;
-      break;
-    case 2: // Medium
-      cells_to_remove = CELLS_TO_REMOVE_MEDIUM;
-      break;
-    case 3: // Hard
-      cells_to_remove = CELLS_TO_REMOVE_HARD;
-      break;
+  size_t cells_to_remove = difficulty_map[difficulty];
+
+  // Create an array of all valid cell positions
+  size_t positions[GRID_SIZE * GRID_SIZE];
+  for (size_t i = 0; i < GRID_SIZE * GRID_SIZE; i++)
+    positions[i] = i;
+
+  // Fisher-Yates shuffle to randomize cell removal order
+  for (size_t i = GRID_SIZE * GRID_SIZE - 1; i > 0; i--) {
+    size_t j = rand() % (i + 1),
+           temp = positions[i];
+    positions[i] = positions[j];
+    positions[j] = temp;
   }
 
-  size_t attempts = 0,
-         max_attempts = GRID_SIZE * GRID_SIZE * 2;  // Maximum tries = 2 * total cells
-
-  while (cells_to_remove > 0 && attempts < max_attempts) {
-    size_t row = rand() % GRID_SIZE,
-           col = rand() % GRID_SIZE;
-    if (grid[row][col] != 0) {
-      grid[row][col] = 0;
-      cells_to_remove--;
-    }
-    attempts++;
+  // Remove cells using the shuffled positions
+  for (size_t i = 0; i < cells_to_remove; i++) {
+    size_t pos = positions[i];
+    size_t row = pos / GRID_SIZE;
+    size_t col = pos % GRID_SIZE;
+    grid[row][col] = 0;
   }
 }
 
