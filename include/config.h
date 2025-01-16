@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <time.h>
 #include <math.h>
-#include <windows.h> // Even though I hate Windows (Microsoft), I have to use it for this project
 
 #include "./ui.h"
 #include "./sudoku.h"

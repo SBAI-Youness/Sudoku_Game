@@ -77,7 +77,7 @@ void display_how_to_play() {
 
 void display_invalid_choice() {
   printf(ORANGE "Invalid choice. Please try again.\n" RESET);
-  Sleep(4000); // Wait for 4 seconds
+  sleep(4); // Wait for 4 seconds
 }
 
 void display_invalid_input() {
