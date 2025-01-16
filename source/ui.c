@@ -75,6 +75,11 @@ void display_how_to_play() {
   printf(RESET);
 }
 
+void display_error_message(const char *message) {
+  fprintf(stderr, "Error: %s!\n", message);
+  sleep(INVALID_DELAY);
+}
+
 void display_invalid_choice() {
   printf(ORANGE "Invalid choice. Please try again.\n" RESET);
   sleep(INVALID_DELAY);

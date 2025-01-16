@@ -261,26 +261,21 @@ void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
 
 void save_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE], const char *filename) {
   // Open the file for writing
-  FILE* file = fopen(filename, "w");
+  FILE* file = fopen(filename, "wb");
 
   // Check if the file was opened successfully
   if (file == NULL) {
-    fprintf(stderr, "Error: Could not create the grid file!\n");
+    display_error_message("Could not open the file for writing");
     return;
   }
 
   // Write the grid to the file
-  for (size_t row = 0; row < GRID_SIZE; row++) {
-    for (size_t col = 0; col < GRID_SIZE; col++) {
-      fprintf(file, "%hhu", grid[row][col]);
-      if (col < GRID_SIZE - 1)
-        fprintf(file, " "); // Add space between numbers
-    }
-    fprintf(file, "\n"); // New line after each row
-  }
+  if (fwrite(grid, sizeof(uint8_t), GRID_SIZE * GRID_SIZE, file) != GRID_SIZE * GRID_SIZE)
+    display_error_message("Error writing to the file");
 
   // Close the file
-  fclose(file);
+  if (fclose(file) != 0)
+    display_error_message("Could not close the file");
 }
 
 void load_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE], const char *filename) {
@@ -289,20 +284,15 @@ void load_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE], const char *filename) 
 
   // Check if file exists
   if (file == NULL) {
-    fprintf(stderr, "Error: Could not open file!\n");
+    display_error_message("Could not open the file for reading");
     return;
   }
 
   // Read grid from file
-  for (size_t row = 0; row < GRID_SIZE; row++)
-    for (size_t col = 0; col < GRID_SIZE; col++)
-      if (fscanf(file, "%hhu", &grid[row][col]) != 1) {
-        printf("\nError reading saved game!\n");
-        fclose(file);
-        system("pause");
-        return;
-      }
+  if (fread(grid, sizeof(uint8_t), GRID_SIZE * GRID_SIZE, file) != GRID_SIZE * GRID_SIZE)
+    display_error_message("Error reading from the file");
 
   // Close file
-  fclose(file);
+  if (fclose(file) != 0)
+    display_error_message("Could not close the file");
 }

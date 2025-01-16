@@ -16,6 +16,9 @@ extern void display_game_mode_menu(uint8_t *game_mode_choice);
 // Function used to display the rules of the game
 extern void display_how_to_play();
 
+// Function used to display an error message
+extern void display_error_message(const char *message);
+
 // Function used to display an invalid choice message
 extern void display_invalid_choice();
 

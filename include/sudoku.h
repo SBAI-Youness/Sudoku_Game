@@ -2,8 +2,8 @@
 
 #include "./config.h"
 
-#define CURRENT_GAME_FILE "../saves/grid.txt"
-#define SOLUTION_FILE "../saves/solution.txt"
+#define CURRENT_GAME_FILE "../saves/grid.bin"
+#define SOLUTION_FILE "../saves/solution.bin"
 
 #define GRID_SIZE 9
 #define SUB_GRID_SIZE 3
