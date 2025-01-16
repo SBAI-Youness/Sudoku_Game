@@ -8,6 +8,9 @@
 #define GRID_SIZE 9
 #define SUB_GRID_SIZE 3
 
+// Main function
+extern void sudoku_game();
+
 // Function used to start a new game
 extern void new_game();
 

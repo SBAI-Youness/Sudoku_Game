@@ -1,5 +1,32 @@
 #include "../include/sudoku.h"
 
+void sudoku_game() {
+  uint8_t main_menu_choice;
+
+  srand(time(NULL));
+
+  do {
+    display_main_menu(&main_menu_choice);
+
+    switch (main_menu_choice) {
+      case 1:
+        new_game();
+        break;
+      case 2:
+        continue_game();
+        break;
+      case 3: // Display the rules of the game
+        display_how_to_play();
+        break;
+      case 4: // Quit
+        break;
+      default: // Invalid choice
+        display_invalid_choice();
+        break;
+    }
+  } while (main_menu_choice != 4);
+}
+
 void new_game() {
   uint8_t game_mode_choice,
           grid[GRID_SIZE][GRID_SIZE] = {0};
@@ -25,6 +52,11 @@ void new_game() {
 }
 
 void continue_game() {
+  uint8_t grid[GRID_SIZE][GRID_SIZE];
+
+  load_sudoku_grid(grid, CURRENT_GAME_FILE);
+
+  play_game(grid);
 }
 
 void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
@@ -42,27 +74,37 @@ void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
     display_sudoku_grid(grid);
     printf("Attempts remaining: %d\n", attempts);
 
+    char extra;
+
+    // Input for Row
     printf("Enter row (1-9): ");
-    scanf("%hhu", &row);
-    printf("Enter column (1-9): ");
-    scanf("%hhu", &col);
-    printf("Enter number (1-9): ");
-    scanf("%hhu", &number);
-
-    // Adjust for 0-based indexing
-    row--;
-    col--;
-
-    // Validate input
-    if (row >= GRID_SIZE || col >= GRID_SIZE || number < 1 || number > 9) {
-      printf("Invalid input! Please enter numbers between 1 and 9.\n");
-      Sleep(3000);
+    if (scanf("%hhu%c", &row, &extra) != 2 || extra != '\n' || row < 1 || row > GRID_SIZE) {
+      display_invalid_input();
       continue;
     }
 
+    // Input for Column
+    printf("Enter column (1-9): ");
+    if (scanf("%hhu%c", &col, &extra) != 2 || extra != '\n' || col < 1 || col > GRID_SIZE) {
+      display_invalid_input();
+      continue;
+    }
+
+    // Adjust for zero-based indexing
+    row--;
+    col--;
+
     // Check if cell is empty
     if (grid[row][col] != 0) {
-      printf("This cell is already filled!\n");
+      printf(ORANGE "This cell is already filled!\n" RESET);
+      sleep(3);
+      continue;
+    }
+
+    // Input for Number
+    printf("Enter number (1-9): ");
+    if (scanf("%hhu%c", &number, &extra) != 2 || extra != '\n' || number < 1 || number > 9) {
+      display_invalid_input();
       continue;
     }
 
@@ -92,17 +134,17 @@ void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
           floor(fmod(time_spent, 3600)/60),
           fmod(time_spent, 60));
         }
+        sleep(3);
         return;
       }
     }
     else {
-      printf("Wrong number! Try again.\n");
+      printf(ORANGE "Wrong number! Try again.\n" RESET);
+      sleep(3);
       attempts--;
 
-      if (attempts == 0) {
-        printf("\nGame Over! You've run out of attempts.\n");
-        return;
-      }
+      if (attempts == 0)
+        display_game_over();
     }
   }
 }

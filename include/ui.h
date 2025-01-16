@@ -18,3 +18,9 @@ extern void display_how_to_play();
 
 // Function used to display an invalid choice message
 extern void display_invalid_choice();
+
+// Function used to display a message indicating that the input is invalid
+extern void display_invalid_input();
+
+// Function used to display a message indicating that the game is over
+extern void display_game_over();

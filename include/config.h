@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <unistd.h>
 #include <time.h>
 #include <math.h>
 #include <windows.h> // Even though I hate Windows (Microsoft), I have to use it for this project
@@ -18,6 +19,7 @@
 #define ORANGE      "\033[38;5;208m"
 #define DARK_GREEN  "\033[38;2;0;102;51m"
 #define BLUE        "\033[34m"
+#define LIGHT_BLUE  "\033[38;2;173;216;230m"
 #define CYAN        "\033[1;36m"
 #define BROWN       "\033[38;2;139;69;19m"
 

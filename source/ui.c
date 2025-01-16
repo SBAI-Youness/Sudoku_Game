@@ -7,10 +7,11 @@ void display_game_name() {
 
 void display_main_menu(uint8_t *main_menu_choice) {
   display_game_name();
+  printf(DARK_GREEN BOLD "\t--- Main Menu ---\n\n" RESET);
 
   printf("1. New game\n");
   printf("2. Continue\n");
-  printf("3. How to play\n");
+  printf("3. How to play?\n");
   printf("4. Quit\n");
   printf(" >> ");
 
@@ -23,11 +24,12 @@ void display_main_menu(uint8_t *main_menu_choice) {
 
 void display_game_mode_menu(uint8_t *game_mode_choice) {
   display_game_name();
+  printf(DARK_GREEN BOLD "\t--- Select Difficulty ---\n\n" RESET);
 
   printf("1. Easy\n");
   printf("2. Medium\n");
   printf("3. Hard\n");
-  printf("4. Back\n");
+  printf("4. Back to Main Menu\n");
   printf(" >> ");
 
   char extra;
@@ -39,18 +41,34 @@ void display_game_mode_menu(uint8_t *game_mode_choice) {
 
 void display_how_to_play() {
   display_game_name();
-  printf(DARK_GREEN UNDERLINE "\t--- How to play ---\n\n" RESET);
+  printf(DARK_GREEN UNDERLINE "\t--- How to Play Sudoku ---\n\n" RESET);
 
-  printf("1. The goal is to fill a 9x9 grid with numbers so that each row, column, \n");
-  printf("   and 3x3 section contain all of the digits between 1 and 9.\n");
-  printf("2. At the beginning of the game, some of the cells will be filled in.\n");
-  printf("3. Use logic to fill in the missing digits.\n");
-  printf("4. You can only use each number once in each row, column, and 3x3 section.\n");
-  printf("5. The game is won when the entire grid is correctly filled.\n\n");
-  printf("Game Levels:\n");
-  printf("1. Easy: Suitable for beginners with more pre-filled cells.\n");
-  printf("2. Medium: A moderate challenge with fewer pre-filled cells.\n");
-  printf("3. Hard: The most difficult level with the least number of pre-filled cells.\n\n");
+  printf("Game Objective:\n");
+  printf("- Fill the 9x9 grid with numbers 1-9 so that each row, column,\n");
+  printf("  and 3x3 section contains all digits exactly once.\n\n");
+
+  printf("Game Controls:\n");
+  printf("- Enter row number (1-9)\n");
+  printf("- Enter column number (1-9)\n");
+  printf("- Enter the number you want to place (1-9)\n\n");
+
+  printf("Game Rules:\n");
+  printf("1. You have 3 attempts to complete the puzzle\n");
+  printf("2. Each wrong number placement costs 1 attempt\n");
+  printf("3. You cannot modify pre-filled cells\n");
+  printf("4. The game ends when you either:\n");
+  printf("   - Successfully complete the puzzle\n");
+  printf("   - Run out of attempts\n\n");
+
+  printf("Difficulty Levels:\n");
+  printf("1. Easy: 61 pre-filled cells (20 cells removed)\n");
+  printf("2. Medium: 41 pre-filled cells (40 cells removed)\n");
+  printf("3. Hard: 21 pre-filled cells (60 cells removed)\n\n");
+
+  printf("Tips:\n");
+  printf("- Use '.' to identify empty cells on the grid\n");
+  printf("- Your progress is automatically saved\n");
+  printf("- You can continue your game later from the main menu\n\n");
 
   printf(YELLOW);
   system("pause");
@@ -60,4 +78,16 @@ void display_how_to_play() {
 void display_invalid_choice() {
   printf(ORANGE "Invalid choice. Please try again.\n" RESET);
   Sleep(4000); // Wait for 4 seconds
+}
+
+void display_invalid_input() {
+  printf(ORANGE "Invalid input! Please enter a number between 1 and 9.\n" RESET);
+  clear_input_buffer();
+  sleep(3);
+}
+
+void display_game_over() {
+  printf(RED "\nGame Over! You've run out of attempts.\n" RESET);
+  sleep(4);
+  return;
 }
