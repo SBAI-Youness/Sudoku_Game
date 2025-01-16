@@ -8,6 +8,12 @@
 #define GRID_SIZE 9
 #define SUB_GRID_SIZE 3
 
+#define MAX_ATTEMPTS 3
+
+#define CELLS_TO_REMOVE_EASY 20
+#define CELLS_TO_REMOVE_MEDIUM 40
+#define CELLS_TO_REMOVE_HARD 60
+
 // Main function of the game
 extern void sudoku_game();
 
@@ -36,7 +42,7 @@ extern bool is_valid(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t row, uint8_t co
 extern bool is_puzzle_solved(uint8_t grid[GRID_SIZE][GRID_SIZE]);
 
 // Function used to display the sudoku grid
-extern void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]);
+extern void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t user_filled[GRID_SIZE][GRID_SIZE]);
 
 // Function used to save the sudoku grid to a text file
 extern void save_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE], const char *filename);

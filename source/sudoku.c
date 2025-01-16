@@ -56,19 +56,20 @@ void continue_game() {
 
 void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
   uint8_t solution[GRID_SIZE][GRID_SIZE]; // 2D array to store the solution of the sudoku puzzle
+  uint8_t user_filled[GRID_SIZE][GRID_SIZE] = {0}; // Track user-filled cells
 
   // Load the solution of the sudoku puzzle from a file
   load_sudoku_grid(solution, SOLUTION_FILE);
 
   uint8_t row, column, number; // Variables to store the user's input
   char extra; // Variable to store the extra character after the user input
-  size_t attempts_left = 3; // Variable to store the number of attempts left
+  size_t attempts_left = MAX_ATTEMPTS; // Variable to store the number of attempts left
   time_t start_time = time(NULL); // Variable to store the start time of the game
 
   // Loop until the user solves the puzzle or runs out of attempts
   while (attempts_left > 0) {
     display_game_name();
-    display_sudoku_grid(grid);
+    display_sudoku_grid(grid, user_filled);
 
     printf("Attempts remaining:" ORANGE " %zu\n" RESET, attempts_left);
 
@@ -107,6 +108,7 @@ void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
     // Check if number is correct
     if (solution[row][column] == number) {
       grid[row][column] = number;
+      user_filled[row][column] = 1; // Mark this cell as user-filled
       save_sudoku_grid(grid, CURRENT_GAME_FILE);
 
       if (is_puzzle_solved(grid) == true) {
@@ -114,7 +116,7 @@ void play_game(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
         double time_spent = difftime(end_time, start_time);
 
         display_game_name();
-        display_sudoku_grid(grid);
+        display_sudoku_grid(grid, user_filled);
 
         display_congratulations(time_spent);
       }
@@ -185,13 +187,13 @@ void remove_cells(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t difficulty) {
 
   switch (difficulty) {
     case 1: // Easy
-      cells_to_remove = 20;
+      cells_to_remove = CELLS_TO_REMOVE_EASY;
       break;
     case 2: // Medium
-      cells_to_remove = 40;
+      cells_to_remove = CELLS_TO_REMOVE_MEDIUM;
       break;
     case 3: // Hard
-      cells_to_remove = 60;
+      cells_to_remove = CELLS_TO_REMOVE_HARD;
       break;
   }
 
@@ -233,7 +235,7 @@ bool is_puzzle_solved(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
   return true;
 }
 
-void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
+void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE], uint8_t user_filled[GRID_SIZE][GRID_SIZE]) {
   printf("\n");
   printf("    1 2 3   4 5 6   7 8 9\n");  // Column numbers
   printf("  +-------+-------+-------+\n");
@@ -245,10 +247,16 @@ void display_sudoku_grid(uint8_t grid[GRID_SIZE][GRID_SIZE]) {
       if (col % 3 == 0)
         printf("| ");
 
-      if (grid[row][col] == 0)
+      if (grid[row][col] == 0) {
         printf(". ");
-      else
-        printf("%d ", grid[row][col]);
+      } else {
+        // Check if this cell was filled by the user
+        if (user_filled[row][col]) {
+          printf(BLUE "%d " RESET, grid[row][col]);
+        } else {
+          printf("%d ", grid[row][col]);
+        }
+      }
     }
     printf("|\n");
 
