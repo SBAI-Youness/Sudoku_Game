@@ -4,6 +4,23 @@
 
 #define GAME_NAME "Sudoku Game"
 
+// Forreground text colors
+#define RESET       "\033[0m" // Reset the text color to teh default
+#define RED         "\033[31m" // For the game over
+#define GREEN       "\033[32m" // For the congratulations
+#define YELLOW      "\033[1;33m" // For the click to continue message
+#define ORANGE      "\033[38;5;208m" // For the warning messages
+#define BLUE        "\033[34m" // For the game name
+#define LIGHT_BLUE  "\033[38;2;173;216;230m" // For the added cells
+#define DARK_GREEN  "\033[38;2;0;102;51m" // For the menus
+
+// Text styles
+#define BOLD        "\033[1m" // For bold texts
+#define UNDERLINE   "\033[4m" // For underlined texts
+
+// Display delay in seconds
+#define DISPLAY_DELAY 4
+
 // Function used to display the game name underlined in blue and bold
 extern void display_game_name();
 
