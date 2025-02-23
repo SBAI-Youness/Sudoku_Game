@@ -1,28 +1,32 @@
 #include <stdlib.h>
+#include <stdbool.h>
 #include "../include/config.h"
-#include "../include/raylib.h"
+#include "../include/draw.h"
 
 int main() {
-  // Initialize the window with the specified width, height, and game name
-  InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
+  InitializeWindowAndSettings();
 
-  // Set the game's target frame rate to 60 frames per second
-  SetTargetFPS(60);
+  // Load an image texture
+  Texture2D game_icon_texture = LoadResizedTexture("../assets/icons/game_icon.png", WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8);
 
   // Main game loop: runs until the window is closed
   while (WindowShouldClose() == false) {
     // Begin drawing the frame
     BeginDrawing();
 
-    // Clear the screen with a blue background color (RGB: 46, 88, 255, 255)
-    ClearBackground((Color){ 46, 88, 255, 255});
+    // Clear the screen with a white background color
+    ClearBackground(WHITE);
+
+    DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
     // End the drawing of the current frame
     EndDrawing();
   }
 
-  // Close the window and clean up resources
-  CloseWindow();
+  // Unload the game icon texture
+  UnloadTexture(game_icon_texture);
+
+  CloseWindowAndCleanUp();
 
   return EXIT_SUCCESS;
 }
