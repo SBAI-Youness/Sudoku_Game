@@ -17,7 +17,7 @@ void ChangeGameState(enum GAME_STATE *game_state, enum GAME_STATE new_state) {
   (*game_state) = new_state;
 }
 
-void CloseWindowAndCleanUp(void) {
+void CloseWindowAndCleanUp() {
   // Close the window and OpenGL context
   CloseWindow();
 }

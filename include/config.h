@@ -1,6 +1,8 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include "./raylib.h"
 
 #define GAME_NAME "Sudoku Game"
