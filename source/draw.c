@@ -36,6 +36,18 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectan
   DrawText(player->name, (int) (name_box.x + 10), (int) (name_box.y + 10), 20, BLACK);
   DrawText(player->password, (int) (password_box.x + 10), (int) (password_box.y + 10), 20, BLACK);
 
+  // Draw the player's name or placeholder
+  if (strlen(player->name) > 0)
+    DrawText(player->name, (int) (name_box.x + 10), (int) (name_box.y + 10), 20, BLACK);
+  else
+    DrawText("Enter your name", (int) (name_box.x + 10), (int) (name_box.y + 10), 20, GRAY);
+
+  // Draw the player's password or placeholder
+  if (strlen(player->password) > 0)
+    DrawText(player->password, (int) (password_box.x + 10), (int) (password_box.y + 10), 20, BLACK);
+  else
+    DrawText("Enter your password", (int) (password_box.x + 10), (int) (password_box.y + 10), 20, GRAY);
+
   // Change color on hover
   Color text_color = (CheckCollisionPointRec(GetMousePosition(), log_in_box) == true)? RED: BLUE;
 
@@ -61,6 +73,18 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectang
   // Draw the current player name and password inside their respective input fields
   DrawText(player->name, (int) (name_box.x + 10), (int) (name_box.y + 10), 20, BLACK);
   DrawText(player->password, (int) (password_box.x + 10), (int) (password_box.y + 10), 20, BLACK);
+
+  // Draw the player's name or placeholder
+  if (strlen(player->name) > 0)
+    DrawText(player->name, (int) (name_box.x + 10), (int) (name_box.y + 10), 20, BLACK);
+  else
+    DrawText("Enter your name", (int) (name_box.x + 10), (int) (name_box.y + 10), 20, GRAY);
+
+  // Draw the player's password or placeholder
+  if (strlen(player->password) > 0)
+    DrawText(player->password, (int) (password_box.x + 10), (int) (password_box.y + 10), 20, BLACK);
+  else
+    DrawText("Enter your password", (int) (password_box.x + 10), (int) (password_box.y + 10), 20, GRAY);
 
   // Change color on hover
   Color text_color = (CheckCollisionPointRec(GetMousePosition(), sign_up_box) == true)? RED: BLUE;
