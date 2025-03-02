@@ -22,7 +22,7 @@ void HandleSignUpProcess(struct Player *player, Texture2D game_icon_texture, enu
   ProcessSignUpInput(player, name_box, password_box, log_in_box, &isNameActive, &isPasswordActive, game_state);
 
   // Render the sign up page with the appropriate elements (input boxes, text, icon)
-  RenderSignUpPage(player, game_icon_texture, name_box, password_box, log_in_box, text, (Vector2) { text_x_position, text_y_position});
+  RenderSignUpPage(player, game_icon_texture, name_box, password_box, isNameActive, isPasswordActive, log_in_box, text, (Vector2) { text_x_position, text_y_position});
 }
 
 void HandleLogInProcess(struct Player *player, Texture2D game_icon_texture, enum GAME_STATE *game_state) {
@@ -47,5 +47,5 @@ void HandleLogInProcess(struct Player *player, Texture2D game_icon_texture, enum
   ProcessLogInInput(player, name_box, password_box, sign_up_box, &isNameActive, &isPasswordActive, game_state);
 
   // Render the log in page with the appropriate elements (input boxes, text, icon)
-  RenderLogInPage(player, game_icon_texture, name_box, password_box, sign_up_box, text, (Vector2) { text_x_position, text_y_position});
+  RenderLogInPage(player, game_icon_texture, name_box, password_box, isNameActive, isPasswordActive, sign_up_box, text, (Vector2) { text_x_position, text_y_position});
 }
