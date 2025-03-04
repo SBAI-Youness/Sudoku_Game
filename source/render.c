@@ -1,4 +1,4 @@
-#include "../include/draw.h"
+#include "../include/render.h"
 
 Texture2D LoadResizedTexture(const char *file_name, int new_width, int new_height) {
   // Load the image from the file
@@ -17,7 +17,7 @@ Texture2D LoadResizedTexture(const char *file_name, int new_width, int new_heigh
   return texture;
 }
 
-void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, Rectangle password_box, bool isNameBoxActive, bool isPasswordBoxActive, Rectangle log_in_box, const char *log_in_text, Vector2 log_in_text_position) {
+void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, bool isNameBoxActive, Rectangle password_box, bool isPasswordBoxActive, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -77,7 +77,7 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectan
   DrawText(log_in_text, (int) log_in_text_position.x, (int) log_in_text_position.y, 20, text_color);
 }
 
-void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, Rectangle password_box, bool isNameBoxActive, bool isPasswordBoxActive, Rectangle sign_up_box, const char *sign_up_text, Vector2 sign_up_text_position) {
+void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, bool isNameBoxActive, Rectangle password_box, bool isPasswordBoxActive, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 

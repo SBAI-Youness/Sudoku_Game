@@ -1,7 +1,7 @@
 #include "../include/config.h"
-#include "../include/draw.h"
+#include "../include/render.h"
 #include "../include/player.h"
-#include "../include/input.h"
+#include "../include/process.h"
 #include "../include/auth.h"
 
 int main() {
@@ -34,7 +34,7 @@ int main() {
           return EXIT_FAILURE;
         }
 
-        HandleSignUpProcess(player, game_icon_texture, &game_state);
+        HandleSignUpProcess(player, &game_state, game_icon_texture);
 
         break;
 
@@ -47,7 +47,7 @@ int main() {
           return EXIT_FAILURE;
         }
 
-        HandleLogInProcess(player, game_icon_texture, &game_state);
+        HandleLogInProcess(player, &game_state, game_icon_texture);
 
         break;
 

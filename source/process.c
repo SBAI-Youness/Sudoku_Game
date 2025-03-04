@@ -1,6 +1,6 @@
-#include "../include/input.h"
+#include "../include/process.h"
 
-void ProcessSignUpInput(struct Player *player, Rectangle name_box, Rectangle password_box, Rectangle log_in_box, bool *isNameBoxActive, bool *isPasswordBoxActive, enum GAME_STATE *game_state) {
+void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, Rectangle name_box, bool *isNameBoxActive, Rectangle password_box, bool *isPasswordBoxActive, Rectangle log_in_box) {
   // Get the current mouse position
   Vector2 mouse_position = GetMousePosition();
 
@@ -34,7 +34,7 @@ void ProcessSignUpInput(struct Player *player, Rectangle name_box, Rectangle pas
   }
 }
 
-void ProcessLogInInput(struct Player *player, Rectangle name_box, Rectangle password_box, Rectangle sign_up_box, bool *isNameBoxActive, bool *isPasswordBoxActive, enum GAME_STATE *game_state) {
+void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, Rectangle name_box, bool *isNameBoxActive, Rectangle password_box, bool *isPasswordBoxActive, Rectangle sign_up_box) {
   // Get the current mouse position
   Vector2 mouse_position = GetMousePosition();
 
