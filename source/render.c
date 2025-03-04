@@ -32,6 +32,12 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectan
   DrawRectangleRec(name_box, LIGHTGRAY);
   DrawRectangleRec(password_box, LIGHTGRAY);
 
+  // Draw border around the active input field
+  if (isNameBoxActive == true)
+    DrawRectangleLines((int) name_box.x, (int) name_box.y, (int) name_box.width, (int) name_box.height, BLACK);
+  else if (isPasswordBoxActive == true)
+    DrawRectangleLines((int) password_box.x, (int) password_box.y, (int) password_box.width, (int) password_box.height, BLACK);
+
   // Get the current time in seconds
   float current_time = GetTime();
 
@@ -53,7 +59,7 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectan
     DrawText("Enter your name", (int) (name_box.x + 10), (int) (name_box.y + 10), 20, GRAY);
 
   // Draw thick cursor in name box if active
-  if (isNameBoxActive == true && show_cursor) {
+  if (isNameBoxActive == true && show_cursor == true) {
     int name_text_width = MeasureText(player->name, 20);
     DrawRectangle((int) (name_box.x + padding_x + name_text_width), (int) (name_box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
@@ -65,7 +71,7 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectan
     DrawText("Enter your password", (int) (password_box.x + 10), (int) (password_box.y + 10), 20, GRAY);
 
   // Draw cursor in password box if active
-  if (isPasswordBoxActive  == true && show_cursor == true) {
+  if (isPasswordBoxActive == true && show_cursor == true) {
     int pass_text_width = MeasureText(player->password, 20);
     DrawRectangle((int) (password_box.x + padding_x + pass_text_width), (int) (password_box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
@@ -103,6 +109,12 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectang
   DrawRectangleRec(name_box, LIGHTGRAY);
   DrawRectangleRec(password_box, LIGHTGRAY);
 
+  // Draw border around the active input field
+  if (isNameBoxActive == true)
+    DrawRectangleLines((int) name_box.x, (int) name_box.y, (int) name_box.width, (int) name_box.height, BLACK);
+  else if (isPasswordBoxActive == true)
+    DrawRectangleLines((int) password_box.x, (int) password_box.y, (int) password_box.width, (int) password_box.height, BLACK);
+
   // Get the current time in seconds
   float current_time = GetTime();
 
@@ -124,7 +136,7 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectang
     DrawText("Enter your name", (int) (name_box.x + 10), (int) (name_box.y + 10), 20, GRAY);
 
   // Draw thick cursor in name box if active
-  if (isNameBoxActive == true && show_cursor) {
+  if (isNameBoxActive == true && show_cursor == true) {
     int name_text_width = MeasureText(player->name, 20);
     DrawRectangle((int) (name_box.x + padding_x + name_text_width), (int) (name_box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
@@ -136,7 +148,7 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectang
     DrawText("Enter your password", (int) (password_box.x + 10), (int) (password_box.y + 10), 20, GRAY);
 
   // Draw cursor in password box if active
-  if (isPasswordBoxActive  == true && show_cursor == true) {
+  if (isPasswordBoxActive == true && show_cursor == true) {
     int pass_text_width = MeasureText(player->password, 20);
     DrawRectangle((int) (password_box.x + padding_x + pass_text_width), (int) (password_box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
