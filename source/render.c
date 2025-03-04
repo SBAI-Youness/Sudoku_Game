@@ -17,7 +17,7 @@ Texture2D LoadResizedTexture(const char *file_name, int new_width, int new_heigh
   return texture;
 }
 
-void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, bool isNameBoxActive, Rectangle password_box, bool isPasswordBoxActive, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text) {
+void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, bool isNameBoxActive, Rectangle password_box, bool isPasswordBoxActive, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text, Rectangle sign_up_button) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -75,9 +75,20 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectan
 
   // Draw the log in prompt
   DrawText(log_in_text, (int) log_in_text_position.x, (int) log_in_text_position.y, 20, text_color);
+
+  // Draw the "Sign Up" button
+  Color button_color = (CheckCollisionPointRec(GetMousePosition(), sign_up_button) == true)? DARKGRAY: GRAY;
+  DrawRectangleRec(sign_up_button, button_color);
+
+  // Center the text inside the button
+  int text_width = MeasureText("Sign Up", 20),  // Measure the width of the "Sign Up" text
+      text_x_position = sign_up_button.x + (sign_up_button.width / 2) - (text_width / 2), // Center horizontally
+      text_y_position = sign_up_button.y + (sign_up_button.height / 2) - 10; // Center vertically
+
+  DrawText("Sign Up", text_x_position, text_y_position, 20, WHITE);
 }
 
-void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, bool isNameBoxActive, Rectangle password_box, bool isPasswordBoxActive, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text) {
+void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, bool isNameBoxActive, Rectangle password_box, bool isPasswordBoxActive, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -135,4 +146,15 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectang
 
   // Draw the sign up prompt
   DrawText(sign_up_text, (int) sign_up_text_position.x, (int) sign_up_text_position.y, 20, text_color);
+
+  // Draw the "Log In" button
+  Color button_color = (CheckCollisionPointRec(GetMousePosition(), log_in_button) == true)? DARKGRAY: GRAY;
+  DrawRectangleRec(log_in_button, button_color);
+
+  // Center the text inside the button
+  int text_width = MeasureText("Log In", 20),  // Measure the width of the "Log In" text
+      text_x_position = log_in_button.x + (log_in_button.width / 2) - (text_width / 2), // Center horizontally
+      text_y_position = log_in_button.y + (log_in_button.height / 2) - 10; // Center vertically
+
+  DrawText("Log In", text_x_position, text_y_position, 20, WHITE);
 }

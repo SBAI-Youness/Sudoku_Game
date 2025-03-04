@@ -18,11 +18,14 @@ void HandleSignUpProcess(struct Player *player, enum GAME_STATE *game_state, Tex
   // Define the clickable area for the "Log in" text
   Rectangle log_in_box = { text_x_position, text_y_position, text_width, 20};
 
+  // Define the "Sign Up" button position and size
+  Rectangle sign_up_button = { (WINDOW_WIDTH / 2) - 75, log_in_box.y + log_in_box.height + 20, 150, 50};
+
   // Process the input for the sign up form (name and password)
-  ProcessSignUpInput(player, game_state, name_box, &isNameBoxActive, password_box, &isPasswordBoxActive, log_in_box);
+  ProcessSignUpInput(player, game_state, name_box, &isNameBoxActive, password_box, &isPasswordBoxActive, log_in_box, sign_up_button);
 
   // Render the sign up page with the appropriate elements (input boxes, text, icon)
-  RenderSignUpPage(player, game_icon_texture, name_box, isNameBoxActive, password_box, isPasswordBoxActive, log_in_box, (Vector2) { text_x_position, text_y_position}, text);
+  RenderSignUpPage(player, game_icon_texture, name_box, isNameBoxActive, password_box, isPasswordBoxActive, log_in_box, (Vector2) { text_x_position, text_y_position}, text, sign_up_button);
 }
 
 void HandleLogInProcess(struct Player *player, enum GAME_STATE *game_state, Texture2D game_icon_texture) {
@@ -43,9 +46,12 @@ void HandleLogInProcess(struct Player *player, enum GAME_STATE *game_state, Text
   // Define the clickable area for the "Sign Up" text
   Rectangle sign_up_box = { text_x_position, text_y_position, text_width, 20};
 
+  // Define the "Log In" button position and size
+  Rectangle log_in_button = { (WINDOW_WIDTH / 2) - 75, sign_up_box.y + sign_up_box.height + 20, 150, 50};
+
   // Process the input for the log in form (name and password)
-  ProcessSignUpInput(player, game_state, name_box, &isNameBoxActive, password_box, &isPasswordBoxActive, sign_up_box);
+  ProcessLogInInput(player, game_state, name_box, &isNameBoxActive, password_box, &isPasswordBoxActive, sign_up_box, log_in_button);
 
   // Render the log in page with the appropriate elements (input boxes, text, icon)
-  RenderSignUpPage(player, game_icon_texture, name_box, isNameBoxActive, password_box, isPasswordBoxActive, sign_up_box, (Vector2) { text_x_position, text_y_position}, text);
+  RenderLogInPage(player, game_icon_texture, name_box, isNameBoxActive, password_box, isPasswordBoxActive, sign_up_box, (Vector2) { text_x_position, text_y_position}, text, log_in_button);
 }
