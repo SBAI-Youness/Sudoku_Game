@@ -17,7 +17,7 @@ Texture2D LoadResizedTexture(const char *file_name, int new_width, int new_heigh
   return texture;
 }
 
-void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, bool isNameBoxActive, Rectangle password_box, bool isPasswordBoxActive, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text, Rectangle sign_up_button) {
+void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text, Rectangle sign_up_button) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -70,6 +70,12 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectan
   else
     DrawText("Enter your password", (int) (password_box.x + 10), (int) (password_box.y + 10), 20, GRAY);
 
+  // Draw required image if fields are empty
+  if (isNameEmpty == true)
+    DrawTexture(required_image_texture, (int) (name_box.x + name_box.width - 33), (int) (name_box.y + 10), WHITE);
+  if (isPasswordEmpty == true)
+    DrawTexture(required_image_texture, (int) (password_box.x + password_box.width - 33), (int) (password_box.y + 10), WHITE);
+
   // Draw cursor in password box if active
   if (isPasswordBoxActive == true && show_cursor == true) {
     int pass_text_width = MeasureText(player->password, 20);
@@ -94,7 +100,7 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Rectan
   DrawText("Sign Up", text_x_position, text_y_position, 20, WHITE);
 }
 
-void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectangle name_box, bool isNameBoxActive, Rectangle password_box, bool isPasswordBoxActive, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button) {
+void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -146,6 +152,12 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Rectang
     DrawText(player->password, (int) (password_box.x + 10), (int) (password_box.y + 10), 20, BLACK);
   else
     DrawText("Enter your password", (int) (password_box.x + 10), (int) (password_box.y + 10), 20, GRAY);
+
+  // Draw required image if fields are empty
+  if (isNameEmpty == true)
+    DrawTexture(required_image_texture, (int) (name_box.x + name_box.width - 33), (int) (name_box.y + 10), WHITE);
+  if (isPasswordEmpty == true)
+    DrawTexture(required_image_texture, (int) (password_box.x + password_box.width - 33), (int) (password_box.y + 10), WHITE);
 
   // Draw cursor in password box if active
   if (isPasswordBoxActive == true && show_cursor == true) {

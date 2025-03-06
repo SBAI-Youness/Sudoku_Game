@@ -11,7 +11,8 @@ int main() {
   enum GAME_STATE game_state = SIGN_UP;
 
   // Load an image texture
-  Texture2D game_icon_texture = LoadResizedTexture("../assets/icons/game_icon.png", WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8);
+  Texture2D game_icon_texture = LoadResizedTexture("../assets/icons/game_icon.png", WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8),
+            required_image_texture = LoadResizedTexture("../assets/images/required.png", 28, 28);
 
   // Create a player pointer (NULL initially)
   struct Player *player = NULL;
@@ -34,7 +35,7 @@ int main() {
           return EXIT_FAILURE;
         }
 
-        HandleSignUpProcess(player, &game_state, game_icon_texture);
+        HandleSignUpProcess(player, &game_state, game_icon_texture, required_image_texture);
 
         break;
 
@@ -47,7 +48,7 @@ int main() {
           return EXIT_FAILURE;
         }
 
-        HandleLogInProcess(player, &game_state, game_icon_texture);
+        HandleLogInProcess(player, &game_state, game_icon_texture, required_image_texture);
 
         break;
 
@@ -67,7 +68,8 @@ int main() {
   if (player != NULL)
     player->FreePlayer(player);
 
-  // Unload the game icon texture
+  // Unload textures
+  UnloadTexture(required_image_texture);
   UnloadTexture(game_icon_texture);
 
   CloseWindowAndCleanUp();
