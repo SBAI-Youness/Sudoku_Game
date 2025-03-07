@@ -37,12 +37,12 @@ void SetPlayerMethods(struct Player *self) {
 }
 
 void SetName(struct Player *self) {
-  // Get the key pressed by the player
-  int key = GetKeyPressed();
+  // Get the character pressed by the player
+  int key = GetCharPressed();
 
-  // Process all pressed keys
+  // Process all pressed characters
   while (key > 0) {
-    // Check if the key is a printable character and within the max length limit
+    // Only append if it's a printable character and within the limit
     if (key >= 32 && key <= 126 && strlen(self->name) < MAX_NAME_LENGTH) {
       // Get the current length of the name
       size_t length = strlen(self->name);
@@ -53,21 +53,23 @@ void SetName(struct Player *self) {
       // Null-terminate the string
       self->name[length + 1] = '\0';
     }
-    else if (key == KEY_BACKSPACE && strlen(self->name) > 0) // Handle backspace: Remove the last character if the string is not empty
-      self->name[strlen(self->name) - 1] = '\0';
 
-    // Check for the next key press
-    key = GetKeyPressed();
+    // Get the next character
+    key = GetCharPressed();
   }
+
+  // Handle backspace separately
+  if (IsKeyPressed(KEY_BACKSPACE) == true && strlen(self->name) > 0)
+    self->name[strlen(self->name) - 1] = '\0';
 }
 
 void SetPassword(struct Player *self) {
-  // Get the key pressed by the player
-  int key = GetKeyPressed();
+  // Get the character pressed by the player
+  int key = GetCharPressed();
 
-  // Process all pressed keys
+  // Process all pressed characters
   while (key > 0) {
-    // Check if the key is a printable character and within the max length limit
+    // Only append if it's a printable character and within the limit
     if (key >= 32 && key <= 126 && strlen(self->password) < MAX_PASSWORD_LENGTH) {
       // Get the current length of the password
       size_t length = strlen(self->password);
@@ -78,12 +80,14 @@ void SetPassword(struct Player *self) {
       // Null-terminate the string
       self->password[length + 1] = '\0';
     }
-    else if (key == KEY_BACKSPACE && strlen(self->password) > 0) // Handle backspace: Remove the last character if the string is not empty
-      self->password[strlen(self->password) - 1] = '\0';
 
-    // Check for the next key press
-    key = GetKeyPressed();
+    // Get the next character
+    key = GetCharPressed();
   }
+
+  // Handle backspace separately
+  if (IsKeyPressed(KEY_BACKSPACE) == true && strlen(self->password) > 0)
+      self->password[strlen(self->password) - 1] = '\0';
 }
 
 bool isNameTaken(const char *name) {
