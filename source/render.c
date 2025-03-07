@@ -17,7 +17,7 @@ Texture2D LoadResizedTexture(const char *file_name, int new_width, int new_heigh
   return texture;
 }
 
-void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text, Rectangle sign_up_button) {
+void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, bool isNameUnique, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text, Rectangle sign_up_button) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -98,6 +98,10 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Textur
       text_y_position = sign_up_button.y + (sign_up_button.height / 2) - 10; // Center vertically
 
   DrawText("Sign Up", text_x_position, text_y_position, 20, WHITE);
+
+  // Draw error message if name is taken
+  if (isNameUnique == false)
+    DrawText("Name already taken!", (int) ((WINDOW_WIDTH / 2) + (name_box.width / 2) - 210), (int) (name_box.y + name_box.height + 2), 20, RED);
 }
 
 void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button) {

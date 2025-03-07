@@ -1,6 +1,6 @@
 #include "../include/process.h"
 
-void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, Rectangle name_box, bool *isNameBoxActive, Rectangle password_box, bool *isPasswordBoxActive, Rectangle log_in_box, Rectangle sign_up_button, bool *isNameEmpty, bool *isPasswordEmpty) {
+void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, Rectangle name_box, bool *isNameBoxActive, Rectangle password_box, bool *isPasswordBoxActive, Rectangle log_in_box, Rectangle sign_up_button, bool *isNameEmpty, bool *isPasswordEmpty, bool *isNameUnique) {
   // Get the current mouse position
   Vector2 mouse_position = GetMousePosition();
 
@@ -42,8 +42,15 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, Rect
     (*isPasswordEmpty) = (strlen(player->password) == 0);
 
     // Only proceed if both fields are filled
-    if ((*isNameEmpty) == false && (*isPasswordEmpty) == false)
-      ChangeGameState(game_state, MAIN_MENU);
+    if ((*isNameEmpty) == false && (*isPasswordEmpty) == false) {
+      if (isNameTaken(player->name) == true)
+        (*isNameUnique) = false;
+      else {
+        (*isNameUnique) = true;
+        player->SavePlayer(player); // Save the player's info to the plauer's file
+        ChangeGameState(game_state, MAIN_MENU);
+      }
+    }
   }
 }
 

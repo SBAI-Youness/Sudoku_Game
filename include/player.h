@@ -35,6 +35,9 @@ extern void SetName(struct Player *self);
 // Function used to read and set the password for a player
 extern void SetPassword(struct Player *self);
 
+// Function used to check if the player's name is already taken or not
+bool isNameTaken(const char *name);
+
 // Function used to save the player info into a csv file
 extern void SavePlayer(struct Player *self);
 

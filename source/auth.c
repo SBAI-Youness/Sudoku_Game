@@ -25,11 +25,14 @@ void HandleSignUpProcess(struct Player *player, enum GAME_STATE *game_state, Tex
   static bool isNameEmpty = false,
               isPasswordEmpty = false;
 
+  // Flag to track if the name is usique or not
+  static bool isNameUnique = true;
+
   // Process the input for the sign up form (name and password)
-  ProcessSignUpInput(player, game_state, name_box, &isNameBoxActive, password_box, &isPasswordBoxActive, log_in_box, sign_up_button, &isNameEmpty, &isPasswordEmpty);
+  ProcessSignUpInput(player, game_state, name_box, &isNameBoxActive, password_box, &isPasswordBoxActive, log_in_box, sign_up_button, &isNameEmpty, &isPasswordEmpty, &isNameUnique);
 
   // Render the sign up page with the appropriate elements (input boxes, text, icon)
-  RenderSignUpPage(player, game_icon_texture, required_image_texture, name_box, isNameBoxActive, isNameEmpty, password_box, isPasswordBoxActive, isPasswordEmpty, log_in_box, (Vector2) { text_x_position, text_y_position}, text, sign_up_button);
+  RenderSignUpPage(player, game_icon_texture, required_image_texture, name_box, isNameBoxActive, isNameEmpty, isNameUnique, password_box, isPasswordBoxActive, isPasswordEmpty, log_in_box, (Vector2) { text_x_position, text_y_position}, text, sign_up_button);
 }
 
 void HandleLogInProcess(struct Player *player, enum GAME_STATE *game_state, Texture2D game_icon_texture, Texture2D required_image_texture) {
