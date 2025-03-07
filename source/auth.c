@@ -60,9 +60,61 @@ void HandleLogInProcess(struct Player *player, enum GAME_STATE *game_state, Text
   static bool isNameEmpty = false,
               isPasswordEmpty = false;
 
+  // Flag to track if the player is authenticated or not
+  static bool isAuthenticated = true;
+
   // Process the input for the log in form (name and password)
-  ProcessLogInInput(player, game_state, name_box, &isNameBoxActive, password_box, &isPasswordBoxActive, sign_up_box, log_in_button, &isNameEmpty, &isPasswordEmpty);
+  ProcessLogInInput(player, game_state, name_box, &isNameBoxActive, password_box, &isPasswordBoxActive, sign_up_box, log_in_button, &isNameEmpty, &isPasswordEmpty, &isAuthenticated);
 
   // Render the log in page with the appropriate elements (input boxes, text, icon)
-  RenderLogInPage(player, game_icon_texture, required_image_texture, name_box, isNameBoxActive, isNameEmpty, password_box, isPasswordBoxActive, isPasswordEmpty, sign_up_box, (Vector2) { text_x_position, text_y_position}, text, log_in_button);
+  RenderLogInPage(player, game_icon_texture, required_image_texture, name_box, isNameBoxActive, isNameEmpty, password_box, isPasswordBoxActive, isPasswordEmpty, sign_up_box, (Vector2) { text_x_position, text_y_position}, text, log_in_button, isAuthenticated);
+}
+
+bool isNameTaken(const char *name) {
+  // Open the players' file to search for the player
+  FILE *file = fopen(PLAYERS_FILE, "r");
+
+  // Check if the file was opened successfully
+  if (file == NULL) {
+    TraceLog(LOG_ERROR, "Unable to open the players' file!");
+    return false;
+  }
+
+  // TODO: Later on, I'm gonna need to skip the file's header ("Name,Password\n")
+
+  // Temporary variable to store the player's name
+  char temp_name[MAX_NAME_LENGTH + 1];
+
+  while (fscanf(file, "%[^,],%*s\n", temp_name) != EOF)
+    if (strcmp(temp_name, name) == 0) {
+      fclose(file);
+      return true; // Name is already taken
+    }
+
+  // Name not found
+  fclose(file);
+  return false; // Name is available
+}
+
+bool AuthenticatePlayer(struct Player *player) {
+  // Open the players' file to search for the player
+  FILE *file = fopen(PLAYERS_FILE, "r");
+
+  // Check if the file was opened successfully
+  if (file == NULL) {
+    TraceLog(LOG_ERROR, "Unable to open the players' file.");
+    return false;
+  }
+
+  char temp_name[MAX_NAME_LENGTH + 1],
+       temp_password[MAX_PASSWORD_LENGTH + 1];
+
+  while (fscanf(file, "%[^,],%[^\n]\n", temp_name, temp_password) != EOF)
+    if (strcmp(temp_name, player->name) == 0 && strcmp(temp_password, player->password) == 0) {
+        fclose(file);
+        return true; // Authentication successful
+    }
+
+  fclose(file);
+  return false; // Authentication failed
 }

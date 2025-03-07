@@ -90,32 +90,6 @@ void SetPassword(struct Player *self) {
       self->password[strlen(self->password) - 1] = '\0';
 }
 
-bool isNameTaken(const char *name) {
-  // Open the players' file to search for the player
-  FILE *file = fopen(PLAYERS_FILE, "r");
-
-  // Check if the file was opened successfully
-  if (file == NULL) {
-    TraceLog(LOG_ERROR, "Unable to open the players' file!");
-    return false;
-  }
-
-  // TODO: Later on, I'm gonna need to skip the file's header ("Name,Password\n")
-
-  // Temporary variable to store the player's name
-  char temp_name[MAX_NAME_LENGTH + 1];
-
-  while (fscanf(file, "%[^,],%*s\n", temp_name) == 1)
-    if (strcmp(temp_name, name) == 0) {
-      fclose(file);
-      return true; // Name is already taken
-    }
-
-  // Name not found
-  fclose(file);
-  return false; // Name is available
-}
-
 void SavePlayer(struct Player *self) {
   // Open the players' file in append mode to add a new player
   FILE *file = fopen(PLAYERS_FILE, "a");

@@ -54,7 +54,7 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, Rect
   }
 }
 
-void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, Rectangle name_box, bool *isNameBoxActive, Rectangle password_box, bool *isPasswordBoxActive, Rectangle sign_up_box, Rectangle log_in_button, bool *isNameEmpty, bool *isPasswordEmpty) {
+void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, Rectangle name_box, bool *isNameBoxActive, Rectangle password_box, bool *isPasswordBoxActive, Rectangle sign_up_box, Rectangle log_in_button, bool *isNameEmpty, bool *isPasswordEmpty, bool *isAuthenticated) {
   // Get the current mouse position
   Vector2 mouse_position = GetMousePosition();
 
@@ -96,7 +96,13 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, Recta
     (*isPasswordEmpty) = (strlen(player->password) == 0);
 
     // Only proceed if both fields are filled
-    if ((*isNameEmpty) == false && (*isPasswordEmpty) == false)
-      ChangeGameState(game_state, MAIN_MENU);
+    if ((*isNameEmpty) == false && (*isPasswordEmpty) == false) {
+      if (AuthenticatePlayer(player) == true) {
+        (*isAuthenticated) = true;
+        ChangeGameState(game_state, MAIN_MENU);
+      }
+      else
+        (*isAuthenticated) = false;
+    }
   }
 }

@@ -104,7 +104,7 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Textur
     DrawText("Name already taken!", (int) ((WINDOW_WIDTH / 2) + (name_box.width / 2) - 210), (int) (name_box.y + name_box.height + 2), 20, RED);
 }
 
-void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button) {
+void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button, bool isAuthenticated) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -185,4 +185,8 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture
       text_y_position = log_in_button.y + (log_in_button.height / 2) - 10; // Center vertically
 
   DrawText("Log In", text_x_position, text_y_position, 20, WHITE);
+
+  if (isAuthenticated == false)
+    DrawText("Invalid credentials. Try again.", (int) ((WINDOW_WIDTH / 2) + (password_box.width / 2) - 314), (int) (password_box.y + password_box.height + 2), 20, RED);
+
 }
