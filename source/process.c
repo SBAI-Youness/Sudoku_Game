@@ -1,27 +1,27 @@
 #include "../include/process.h"
 
-void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, Rectangle name_box, bool *isNameBoxActive, Rectangle password_box, bool *isPasswordBoxActive, Rectangle log_in_box, Rectangle sign_up_button, bool *isNameEmpty, bool *isPasswordEmpty, bool *isNameUnique) {
+void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, struct InputBox *name_box, bool *isNameUnique, struct InputBox *password_box, Rectangle log_in_box, Rectangle sign_up_button) {
   // Get the current mouse position
   Vector2 mouse_position = GetMousePosition();
 
   // Check if the mouse is inside one of the boxes and clicked with the left mouse button
-  if (CheckCollisionPointRec(mouse_position, name_box) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
-    (*isNameBoxActive) = true;
-    (*isPasswordBoxActive) = false;
+  if (CheckCollisionPointRec(mouse_position, name_box->box) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    name_box->isActive = true;
+    password_box->isActive = false;
   }
-  else if (CheckCollisionPointRec(mouse_position, password_box) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
-    (*isNameBoxActive) = false;
-    (*isPasswordBoxActive) = true;
+  else if (CheckCollisionPointRec(mouse_position, password_box->box) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    name_box->isActive = false;
+    password_box->isActive = true;
   }
   else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-    (*isNameBoxActive) = false;
-    (*isPasswordBoxActive) = false;
+    name_box->isActive = false;
+    password_box->isActive = false;
   }
 
   // Handle text input when the box is active
-  if ((*isNameBoxActive) == true && (*isPasswordBoxActive) == false)
+  if (name_box->isActive == true && password_box->isActive == false)
     player->SetName(player);
-  else if ((*isNameBoxActive) == false && (*isPasswordBoxActive) == true)
+  else if (name_box->isActive == false && password_box->isActive == true)
     player->SetPassword(player);
 
   // Check for click
@@ -36,13 +36,13 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, Rect
   // Check if the Sign Up button was clicked
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(mouse_position, sign_up_button) == true) {
     // Validate name input
-    (*isNameEmpty) = (strlen(player->name) == 0);
+    name_box->isEmpty = (strlen(player->name) == 0);
 
     // Validate password input
-    (*isPasswordEmpty) = (strlen(player->password) == 0);
+    password_box->isEmpty = (strlen(player->password) == 0);
 
     // Only proceed if both fields are filled
-    if ((*isNameEmpty) == false && (*isPasswordEmpty) == false) {
+    if (name_box->isEmpty == false && password_box->isEmpty == false) {
       if (isNameTaken(player->name) == true)
         (*isNameUnique) = false;
       else {
@@ -54,28 +54,28 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, Rect
   }
 }
 
-void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, Rectangle name_box, bool *isNameBoxActive, Rectangle password_box, bool *isPasswordBoxActive, Rectangle sign_up_box, Rectangle log_in_button, bool *isNameEmpty, bool *isPasswordEmpty, bool *isAuthenticated) {
+void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struct InputBox *name_box, struct InputBox *password_box, bool *isAuthenticated, Rectangle sign_up_box, Rectangle log_in_button) {
   // Get the current mouse position
   Vector2 mouse_position = GetMousePosition();
 
   // Check if the mouse is inside one of the boxes and clicked with the left mouse button
-  if (CheckCollisionPointRec(mouse_position, name_box) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
-    (*isNameBoxActive) = true;
-    (*isPasswordBoxActive) = false;
+  if (CheckCollisionPointRec(mouse_position, name_box->box) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    name_box->isActive = true;
+    password_box->isActive = false;
   }
-  else if (CheckCollisionPointRec(mouse_position, password_box) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
-    (*isNameBoxActive) = false;
-    (*isPasswordBoxActive) = true;
+  else if (CheckCollisionPointRec(mouse_position, password_box->box) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    name_box->isActive = false;
+    password_box->isActive = true;
   }
   else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-    (*isNameBoxActive) = false;
-    (*isPasswordBoxActive) = false;
+    name_box->isActive = false;
+    password_box->isActive = false;
   }
 
   // Handle text input when the box is active
-  if ((*isNameBoxActive) == true && (*isPasswordBoxActive) == false)
+  if (name_box->isActive == true && password_box->isActive == false)
     player->SetName(player);
-  else if ((*isNameBoxActive) == false && (*isPasswordBoxActive) == true)
+  else if (name_box->isActive == false && password_box->isActive == true)
     player->SetPassword(player);
 
   // Check for click
@@ -90,13 +90,13 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, Recta
   // Check if the Log In button was clicked
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(mouse_position, log_in_button) == true) {
     // Validate name input
-    (*isNameEmpty) = (strlen(player->name) == 0);
+    name_box->isEmpty = (strlen(player->name) == 0);
 
     // Validate password input
-    (*isPasswordEmpty) = (strlen(player->password) == 0);
+    password_box->isEmpty = (strlen(player->password) == 0);
 
     // Only proceed if both fields are filled
-    if ((*isNameEmpty) == false && (*isPasswordEmpty) == false) {
+    if (name_box->isEmpty == false && password_box->isEmpty == false) {
       if (AuthenticatePlayer(player) == true) {
         (*isAuthenticated) = true;
         ChangeGameState(game_state, MAIN_MENU);

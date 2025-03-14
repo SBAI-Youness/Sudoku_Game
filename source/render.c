@@ -17,7 +17,7 @@ Texture2D LoadResizedTexture(const char *file_name, int new_width, int new_heigh
   return texture;
 }
 
-void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, bool isNameUnique, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text, Rectangle sign_up_button) {
+void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, struct InputBox name_box, bool isNameUnique, struct InputBox password_box, Rectangle log_in_box, Vector2 log_in_text_position, const char *log_in_text, Rectangle sign_up_button) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -25,18 +25,18 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Textur
   DrawText("Sign Up", (WINDOW_WIDTH / 2) - 80, 100, 40, DARKGRAY);
 
   // Input field labels
-  DrawText("Player Name:", (int) name_box.x, (int) name_box.y - 30, 20, BLACK);
-  DrawText("Password:", (int) password_box.x, (int) password_box.y - 30, 20, BLACK);
+  DrawText("Player Name:", (int) name_box.box.x, (int) name_box.box.y - 30, 20, BLACK);
+  DrawText("Password:", (int) password_box.box.x, (int) password_box.box.y - 30, 20, BLACK);
 
   // Draw input fields
-  DrawRectangleRec(name_box, LIGHTGRAY);
-  DrawRectangleRec(password_box, LIGHTGRAY);
+  DrawRectangleRec(name_box.box, LIGHTGRAY);
+  DrawRectangleRec(password_box.box, LIGHTGRAY);
 
   // Draw border around the active input field
-  if (isNameBoxActive == true)
-    DrawRectangleLines((int) name_box.x, (int) name_box.y, (int) name_box.width, (int) name_box.height, BLACK);
-  else if (isPasswordBoxActive == true)
-    DrawRectangleLines((int) password_box.x, (int) password_box.y, (int) password_box.width, (int) password_box.height, BLACK);
+  if (name_box.isActive == true)
+    DrawRectangleLines((int) name_box.box.x, (int) name_box.box.y, (int) name_box.box.width, (int) name_box.box.height, BLACK);
+  else if (password_box.isActive == true)
+    DrawRectangleLines((int) password_box.box.x, (int) password_box.box.y, (int) password_box.box.width, (int) password_box.box.height, BLACK);
 
   // Get the current time in seconds
   float current_time = GetTime();
@@ -54,33 +54,37 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Textur
 
   // Draw the player's name or placeholder
   if (strlen(player->name) > 0)
-    DrawText(player->name, (int) (name_box.x + 10), (int) (name_box.y + 10), 20, BLACK);
+    DrawText(player->name, (int) (name_box.box.x + 10), (int) (name_box.box.y + 10), 20, BLACK);
   else
-    DrawText("Enter your name", (int) (name_box.x + 10), (int) (name_box.y + 10), 20, GRAY);
+    DrawText("Enter your name", (int) (name_box.box.x + 10), (int) (name_box.box.y + 10), 20, GRAY);
 
   // Draw thick cursor in name box if active
-  if (isNameBoxActive == true && show_cursor == true) {
+  if (name_box.isActive == true && show_cursor == true) {
     int name_text_width = MeasureText(player->name, 20);
-    DrawRectangle((int) (name_box.x + padding_x + name_text_width), (int) (name_box.y + padding_y), cursor_width, cursor_height, BLACK);
+    DrawRectangle((int) (name_box.box.x + padding_x + name_text_width), (int) (name_box.box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
+
+  // Draw error message if name is taken
+  if (isNameUnique == false)
+    DrawText("Name already taken!", (int) ((WINDOW_WIDTH / 2) + (name_box.box.width / 2) - 210), (int) (name_box.box.y + name_box.box.height + 2), 20, RED);
 
   // Draw the player's password or placeholder
   if (strlen(player->password) > 0)
-    DrawText(player->password, (int) (password_box.x + 10), (int) (password_box.y + 10), 20, BLACK);
+    DrawText(player->password, (int) (password_box.box.x + 10), (int) (password_box.box.y + 10), 20, BLACK);
   else
-    DrawText("Enter your password", (int) (password_box.x + 10), (int) (password_box.y + 10), 20, GRAY);
-
-  // Draw required image if fields are empty
-  if (isNameEmpty == true)
-    DrawTexture(required_image_texture, (int) (name_box.x + name_box.width - 33), (int) (name_box.y + 10), WHITE);
-  if (isPasswordEmpty == true)
-    DrawTexture(required_image_texture, (int) (password_box.x + password_box.width - 33), (int) (password_box.y + 10), WHITE);
+    DrawText("Enter your password", (int) (password_box.box.x + 10), (int) (password_box.box.y + 10), 20, GRAY);
 
   // Draw cursor in password box if active
-  if (isPasswordBoxActive == true && show_cursor == true) {
+  if (password_box.isActive == true && show_cursor == true) {
     int pass_text_width = MeasureText(player->password, 20);
-    DrawRectangle((int) (password_box.x + padding_x + pass_text_width), (int) (password_box.y + padding_y), cursor_width, cursor_height, BLACK);
+    DrawRectangle((int) (password_box.box.x + padding_x + pass_text_width), (int) (password_box.box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
+
+  // Draw required image if fields are empty
+  if (name_box.isEmpty == true)
+    DrawTexture(required_image_texture, (int) (name_box.box.x + name_box.box.width - 33), (int) (name_box.box.y + 10), WHITE);
+  if (password_box.isEmpty == true)
+    DrawTexture(required_image_texture, (int) (password_box.box.x + password_box.box.width - 33), (int) (password_box.box.y + 10), WHITE);
 
   // Change color on hover
   Color text_color = (CheckCollisionPointRec(GetMousePosition(), log_in_box) == true)? RED: BLUE;
@@ -98,13 +102,9 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Textur
       text_y_position = sign_up_button.y + (sign_up_button.height / 2) - 10; // Center vertically
 
   DrawText("Sign Up", text_x_position, text_y_position, 20, WHITE);
-
-  // Draw error message if name is taken
-  if (isNameUnique == false)
-    DrawText("Name already taken!", (int) ((WINDOW_WIDTH / 2) + (name_box.width / 2) - 210), (int) (name_box.y + name_box.height + 2), 20, RED);
 }
 
-void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, Rectangle name_box, bool isNameBoxActive, bool isNameEmpty, Rectangle password_box, bool isPasswordBoxActive, bool isPasswordEmpty, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button, bool isAuthenticated) {
+void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, struct InputBox name_box, struct InputBox password_box, bool isAuthenticated, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -112,18 +112,18 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture
   DrawText("Log In", (WINDOW_WIDTH / 2) - 80, 100, 40, DARKGRAY);
 
   // Input field labels
-  DrawText("Player Name:", (int) name_box.x, (int) name_box.y - 30, 20, BLACK);
-  DrawText("Password:", (int) password_box.x, (int) password_box.y - 30, 20, BLACK);
+  DrawText("Player Name:", (int) name_box.box.x, (int) name_box.box.y - 30, 20, BLACK);
+  DrawText("Password:", (int) password_box.box.x, (int) password_box.box.y - 30, 20, BLACK);
 
   // Draw input fields
-  DrawRectangleRec(name_box, LIGHTGRAY);
-  DrawRectangleRec(password_box, LIGHTGRAY);
+  DrawRectangleRec(name_box.box, LIGHTGRAY);
+  DrawRectangleRec(password_box.box, LIGHTGRAY);
 
   // Draw border around the active input field
-  if (isNameBoxActive == true)
-    DrawRectangleLines((int) name_box.x, (int) name_box.y, (int) name_box.width, (int) name_box.height, BLACK);
-  else if (isPasswordBoxActive == true)
-    DrawRectangleLines((int) password_box.x, (int) password_box.y, (int) password_box.width, (int) password_box.height, BLACK);
+  if (name_box.isActive == true)
+    DrawRectangleLines((int) name_box.box.x, (int) name_box.box.y, (int) name_box.box.width, (int) name_box.box.height, BLACK);
+  else if (password_box.isActive == true)
+    DrawRectangleLines((int) password_box.box.x, (int) password_box.box.y, (int) password_box.box.width, (int) password_box.box.height, BLACK);
 
   // Get the current time in seconds
   float current_time = GetTime();
@@ -141,33 +141,36 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture
 
   // Draw the player's name or placeholder
   if (strlen(player->name) > 0)
-    DrawText(player->name, (int) (name_box.x + 10), (int) (name_box.y + 10), 20, BLACK);
+    DrawText(player->name, (int) (name_box.box.x + 10), (int) (name_box.box.y + 10), 20, BLACK);
   else
-    DrawText("Enter your name", (int) (name_box.x + 10), (int) (name_box.y + 10), 20, GRAY);
+    DrawText("Enter your name", (int) (name_box.box.x + 10), (int) (name_box.box.y + 10), 20, GRAY);
 
   // Draw thick cursor in name box if active
-  if (isNameBoxActive == true && show_cursor == true) {
+  if (name_box.isActive == true && show_cursor == true) {
     int name_text_width = MeasureText(player->name, 20);
-    DrawRectangle((int) (name_box.x + padding_x + name_text_width), (int) (name_box.y + padding_y), cursor_width, cursor_height, BLACK);
+    DrawRectangle((int) (name_box.box.x + padding_x + name_text_width), (int) (name_box.box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
 
   // Draw the player's password or placeholder
   if (strlen(player->password) > 0)
-    DrawText(player->password, (int) (password_box.x + 10), (int) (password_box.y + 10), 20, BLACK);
+    DrawText(player->password, (int) (password_box.box.x + 10), (int) (password_box.box.y + 10), 20, BLACK);
   else
-    DrawText("Enter your password", (int) (password_box.x + 10), (int) (password_box.y + 10), 20, GRAY);
-
-  // Draw required image if fields are empty
-  if (isNameEmpty == true)
-    DrawTexture(required_image_texture, (int) (name_box.x + name_box.width - 33), (int) (name_box.y + 10), WHITE);
-  if (isPasswordEmpty == true)
-    DrawTexture(required_image_texture, (int) (password_box.x + password_box.width - 33), (int) (password_box.y + 10), WHITE);
+    DrawText("Enter your password", (int) (password_box.box.x + 10), (int) (password_box.box.y + 10), 20, GRAY);
 
   // Draw cursor in password box if active
-  if (isPasswordBoxActive == true && show_cursor == true) {
+  if (password_box.isActive == true && show_cursor == true) {
     int pass_text_width = MeasureText(player->password, 20);
-    DrawRectangle((int) (password_box.x + padding_x + pass_text_width), (int) (password_box.y + padding_y), cursor_width, cursor_height, BLACK);
+    DrawRectangle((int) (password_box.box.x + padding_x + pass_text_width), (int) (password_box.box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
+
+  // Draw required image if fields are empty
+  if (name_box.isEmpty == true)
+    DrawTexture(required_image_texture, (int) (name_box.box.x + name_box.box.width - 33), (int) (name_box.box.y + 10), WHITE);
+  if (password_box.isEmpty == true)
+    DrawTexture(required_image_texture, (int) (password_box.box.x + password_box.box.width - 33), (int) (password_box.box.y + 10), WHITE);
+
+  if (isAuthenticated == false)
+    DrawText("Invalid credentials. Try again.", (int) ((WINDOW_WIDTH / 2) + (password_box.box.width / 2) - 314), (int) (password_box.box.y + password_box.box.height + 2), 20, RED);
 
   // Change color on hover
   Color text_color = (CheckCollisionPointRec(GetMousePosition(), sign_up_box) == true)? RED: BLUE;
@@ -185,8 +188,4 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture
       text_y_position = log_in_button.y + (log_in_button.height / 2) - 10; // Center vertically
 
   DrawText("Log In", text_x_position, text_y_position, 20, WHITE);
-
-  if (isAuthenticated == false)
-    DrawText("Invalid credentials. Try again.", (int) ((WINDOW_WIDTH / 2) + (password_box.width / 2) - 314), (int) (password_box.y + password_box.height + 2), 20, RED);
-
 }

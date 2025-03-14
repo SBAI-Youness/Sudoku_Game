@@ -21,6 +21,12 @@ enum GAME_STATE {
   PLAYING
 };
 
+struct InputBox {
+  Rectangle box;  // Input field dimension
+  bool isActive; // Flag to track if the input field is active or not
+  bool isEmpty; // Flag to track if the input field was filled or not (in a way false means don't show the required input field image)
+};
+
 // Function used to initialize the window and game settings
 extern void InitializeWindowAndSettings();
 
