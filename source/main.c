@@ -75,4 +75,4 @@ int main() {
   CloseWindowAndCleanUp();
 
   return EXIT_SUCCESS;
-} 
+}

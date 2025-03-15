@@ -18,6 +18,20 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, stru
     password_box->isActive = false;
   }
 
+  // Handle Tab key to switch between name and password input fields
+  if (IsKeyPressed(KEY_TAB) == true) {
+    if (name_box->isActive == false && password_box->isActive == false)
+        name_box->isActive = true;  // Activate the name box if no input is active
+    else if (name_box->isActive == true) {
+      name_box->isActive = false;
+      password_box->isActive = true;  // If name box is active, switch to password box
+    }
+    else if (password_box->isActive == true) {
+        name_box->isActive = true;  // If password box is active, switch to name box
+        password_box->isActive = false;
+    }
+  }
+
   // Handle text input when the box is active
   if (name_box->isActive == true && password_box->isActive == false)
     player->SetName(player);
@@ -34,7 +48,7 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, stru
   }
 
   // Check if the Sign Up button was clicked
-  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(mouse_position, sign_up_button) == true) {
+  if ((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(mouse_position, sign_up_button) == true) || (password_box->isActive == true && IsKeyPressed(KEY_ENTER) == true)) {
     // Validate name input
     name_box->isEmpty = (strlen(player->name) == 0);
 
@@ -72,6 +86,20 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struc
     password_box->isActive = false;
   }
 
+  // Handle Tab key to switch between name and password input fields
+  if (IsKeyPressed(KEY_TAB) == true) {
+    if (name_box->isActive == false && password_box->isActive == false)
+        name_box->isActive = true;  // Activate the name box if no input is active
+    else if (name_box->isActive == true) {
+      name_box->isActive = false;
+      password_box->isActive = true;  // If name box is active, switch to password box
+    }
+    else if (password_box->isActive == true) {
+        name_box->isActive = true;  // If password box is active, switch to name box
+        password_box->isActive = false;
+    }
+  }
+
   // Handle text input when the box is active
   if (name_box->isActive == true && password_box->isActive == false)
     player->SetName(player);
@@ -88,7 +116,7 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struc
   }
 
   // Check if the Log In button was clicked
-  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(mouse_position, log_in_button) == true) {
+  if ((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(mouse_position, log_in_button) == true) || (password_box->isActive == true && IsKeyPressed(KEY_ENTER))) {
     // Validate name input
     name_box->isEmpty = (strlen(player->name) == 0);
 
