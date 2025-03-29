@@ -3,11 +3,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 #include "./config.h"
 
 #define PLAYERS_FILE "../data/players.csv"
 
+#define MIN_NAME_LENGTH 4
 #define MAX_NAME_LENGTH 10
+#define MIN_PASSWORD_LENGTH 8
 #define MAX_PASSWORD_LENGTH 20
 
 // Player structure (with attributes and methods)
@@ -32,8 +35,26 @@ extern void SetPlayerMethods(struct Player *player);
 // Function used to read and set the name for a player
 extern void SetName(struct Player *self);
 
+// Function used to validate the name in real time
+extern struct ValidationResult ValidateNameInRealTime(const char *name);
+
 // Function used to read and set the password for a player
 extern void SetPassword(struct Player *self);
+
+// Function used to validate the password in real time
+extern struct ValidationResult ValidatePasswordInRealTime(const char *password);
+
+// Function used to check if a string contains only the allowed characters
+extern bool ContainsOnlyAllowedChars(const char *str);
+
+// Function used to check if a string has a valid length
+extern bool HasValidLength(const char *str, size_t min, size_t max);
+
+// Function used to check if a string has no consecutive spaces
+extern bool HasNoConsecutiveSpaces(const char *str);
+
+// Function used to check if a string has no leading or trailing spaces
+extern bool HasNoLeadingOrTrailingSpaces(const char *str);
 
 // Function used to save the player info into a csv file
 extern void SavePlayer(struct Player *self);

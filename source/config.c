@@ -17,6 +17,14 @@ void ChangeGameState(enum GAME_STATE *game_state, enum GAME_STATE new_state) {
   (*game_state) = new_state;
 }
 
+void ResetInputBoxes(struct InputBox *name_box, struct InputBox *password_box) {
+  name_box->isActive = false;
+  password_box->isActive = false;
+
+  name_box->isValid = true;
+  password_box->isValid = true;
+}
+
 void CloseWindowAndCleanUp() {
   // Close the window and OpenGL context
   CloseWindow();

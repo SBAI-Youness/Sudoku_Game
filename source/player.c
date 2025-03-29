@@ -37,57 +37,161 @@ void SetPlayerMethods(struct Player *self) {
 }
 
 void SetName(struct Player *self) {
-  // Get the character pressed by the player
   int key = GetCharPressed();
 
-  // Process all pressed characters
   while (key > 0) {
-    // Only append if it's a printable character and within the limit
     if (key >= 32 && key <= 126 && strlen(self->name) < MAX_NAME_LENGTH) {
-      // Get the current length of the name
       size_t length = strlen(self->name);
 
-      // Append the new character
       self->name[length] = (char) key;
-
-      // Null-terminate the string
       self->name[length + 1] = '\0';
     }
 
-    // Get the next character
     key = GetCharPressed();
   }
 
-  // Handle backspace separately
   if (IsKeyPressed(KEY_BACKSPACE) == true && strlen(self->name) > 0)
     self->name[strlen(self->name) - 1] = '\0';
 }
 
+struct ValidationResult ValidateNameInRealTime(const char *name) {
+  struct ValidationResult result = {
+    .isValid = true,
+    .error_message = NULL
+  };
+
+  if (name == NULL || strlen(name) == 0) {
+    result.isValid = false;
+    result.error_message = "Name cannot be empty";
+    return result;
+  }
+
+  if (HasNoLeadingOrTrailingSpaces(name) == false) {
+    result.isValid = false;
+    result.error_message = "Name cannot begin or end with a space";
+    return result;
+  }
+
+  if (HasNoConsecutiveSpaces(name) == false) {
+    result.isValid = false;
+    result.error_message = "Name cannot contain consecutive spaces";
+    return result;
+  }
+
+  if (HasValidLength(name, MIN_NAME_LENGTH, MAX_NAME_LENGTH) == false) {
+    result.isValid = false;
+    result.error_message = "Name must contain between " STR(MIN_NAME_LENGTH) " and " STR(MAX_NAME_LENGTH) " characters";
+    return result;
+  }
+
+  if (ContainsOnlyAllowedChars(name) == false) {
+    result.isValid = false;
+    result.error_message = "Name can only contain authorized letters, numbers and special characters";
+    return result;
+  }
+
+  return result;
+}
+
 void SetPassword(struct Player *self) {
-  // Get the character pressed by the player
   int key = GetCharPressed();
 
-  // Process all pressed characters
   while (key > 0) {
-    // Only append if it's a printable character and within the limit
     if (key >= 32 && key <= 126 && strlen(self->password) < MAX_PASSWORD_LENGTH) {
-      // Get the current length of the password
       size_t length = strlen(self->password);
 
-      // Append the new character
       self->password[length] = (char) key;
-
-      // Null-terminate the string
       self->password[length + 1] = '\0';
     }
 
-    // Get the next character
     key = GetCharPressed();
   }
 
-  // Handle backspace separately
   if (IsKeyPressed(KEY_BACKSPACE) == true && strlen(self->password) > 0)
-      self->password[strlen(self->password) - 1] = '\0';
+    self->password[strlen(self->password) - 1] = '\0';
+}
+
+struct ValidationResult ValidatePasswordInRealTime(const char *password) {
+  struct ValidationResult result = {
+    .isValid = true,
+    .error_message = NULL
+  };
+
+  if (password == NULL || strlen(password) == 0) {
+    result.isValid = false;
+    result.error_message = "Password cannot be empty";
+    return result;
+  }
+
+  if (HasNoLeadingOrTrailingSpaces(password) == false) {
+    result.isValid = false;
+    result.error_message = "Password cannot begin or end with a space";
+    return result;
+  }
+
+  if (HasNoConsecutiveSpaces(password) == false) {
+    result.isValid = false;
+    result.error_message = "Password cannot contain consecutive spaces";
+    return result;
+  }
+
+  if (HasValidLength(password, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH) == false) {
+    result.isValid = false;
+    result.error_message = "Password must contain between " STR(MIN_PASSWORD_LENGTH) " and " STR(MAX_PASSWORD_LENGTH) " characters";
+    return result;
+  }
+
+  if (ContainsOnlyAllowedChars(password) == false) {
+    result.isValid = false;
+    result.error_message = "Password can only contain authorized letters, numbers and special characters";
+    return result;
+  }
+
+  return result;
+}
+
+bool ContainsOnlyAllowedChars(const char *str) {
+  if (str == NULL)
+    return false;
+
+  for (size_t i = 0; str[i] != '\0'; i++) {
+    if (str[i] >= 32 && str[i] <= 126) {
+      // Check if the character is a letter, number, or legal special character
+      if (!isalnum(str[i]) && strchr(ALLOWED_SPECIAL_CHARACTERS, str[i]) == NULL)
+        return false;
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+bool HasValidLength(const char *str, size_t min, size_t max) {
+  if (str == NULL)
+    return false;
+
+  size_t len = strlen(str);
+
+  return len >= min && len <= max;
+}
+
+bool HasNoConsecutiveSpaces(const char *str) {
+  if (str == NULL)
+    return false;
+
+  for (size_t i = 1; str[i] != '\0'; i++)
+    if (str[i] == ' ' && str[i-1] == ' ')
+      return false;
+
+  return true;
+}
+
+bool HasNoLeadingOrTrailingSpaces(const char *str) {
+  if (str == NULL)
+    return false;
+
+  return str[0] != ' ' && str[strlen(str) - 1] != ' ';
 }
 
 void SavePlayer(struct Player *self) {

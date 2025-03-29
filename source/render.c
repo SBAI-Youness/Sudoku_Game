@@ -65,7 +65,7 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Textur
   }
 
   // Draw error message if name is taken
-  if (isNameUnique == false)
+  if (isNameUnique == false && name_box.isActive == false)
     DrawText("Name already taken!", (int) ((WINDOW_WIDTH / 2) + (name_box.box.width / 2) - 210), (int) (name_box.box.y + name_box.box.height + 2), 20, RED);
 
   // Draw the player's password or placeholder
@@ -80,11 +80,24 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Textur
     DrawRectangle((int) (password_box.box.x + padding_x + pass_text_width), (int) (password_box.box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
 
-  // Draw required image if fields are empty
-  if (name_box.isEmpty == true)
-    DrawTexture(required_image_texture, (int) (name_box.box.x + name_box.box.width - 33), (int) (name_box.box.y + 10), WHITE);
-  if (password_box.isEmpty == true)
-    DrawTexture(required_image_texture, (int) (password_box.box.x + password_box.box.width - 33), (int) (password_box.box.y + 10), WHITE);
+  // Draw error messages if fields are invalid
+  if (name_box.isValid == false && name_box.isActive == false) {
+    struct ValidationResult result = ValidateNameInRealTime(player->name);
+
+    if (strlen(player->name) == 0)
+      DrawTexture(required_image_texture, (int) (name_box.box.x + name_box.box.width - 33), (int) (name_box.box.y + 10), WHITE);
+    else
+      DrawText(result.error_message, (int) ((WINDOW_WIDTH / 2) + (name_box.box.width / 2) - 350), (int) (name_box.box.y + name_box.box.height + 2), 20, RED);
+  }
+
+  if (password_box.isValid == false && password_box.isActive == false) {
+    struct ValidationResult result = ValidatePasswordInRealTime(player->password);
+
+    if (strlen(player->password) == 0)
+      DrawTexture(required_image_texture, (int) (password_box.box.x + password_box.box.width - 33), (int) (password_box.box.y + 10), WHITE);
+    else
+      DrawText(result.error_message, (int) ((WINDOW_WIDTH / 2) + (password_box.box.width / 2) - 350), (int) (password_box.box.y + password_box.box.height + 2), 20, RED);
+  }
 
   // Change color on hover
   Color text_color = (CheckCollisionPointRec(GetMousePosition(), log_in_box) == true)? RED: BLUE;
@@ -163,13 +176,24 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture
     DrawRectangle((int) (password_box.box.x + padding_x + pass_text_width), (int) (password_box.box.y + padding_y), cursor_width, cursor_height, BLACK);
   }
 
-  // Draw required image if fields are empty
-  if (name_box.isEmpty == true)
-    DrawTexture(required_image_texture, (int) (name_box.box.x + name_box.box.width - 33), (int) (name_box.box.y + 10), WHITE);
-  if (password_box.isEmpty == true)
-    DrawTexture(required_image_texture, (int) (password_box.box.x + password_box.box.width - 33), (int) (password_box.box.y + 10), WHITE);
+  // Draw error messages if fields are invalid
+  if (name_box.isValid == false && name_box.isActive == false) {
+    struct ValidationResult result = ValidateNameInRealTime(player->name);
+    if (strlen(player->name) == 0)
+      DrawTexture(required_image_texture, (int) (name_box.box.x + name_box.box.width - 33), (int) (name_box.box.y + 10), WHITE);
+    else
+      DrawText(result.error_message, (int) ((WINDOW_WIDTH / 2) + (name_box.box.width / 2) - 350), (int) (name_box.box.y + name_box.box.height + 2), 20, RED);
+  }
+  
+  if (password_box.isValid == false && password_box.isActive == false) {
+    struct ValidationResult result = ValidatePasswordInRealTime(player->password);
+    if (strlen(player->password) == 0)
+      DrawTexture(required_image_texture, (int) (password_box.box.x + password_box.box.width - 33), (int) (password_box.box.y + 10), WHITE);
+    else
+      DrawText(result.error_message, (int) ((WINDOW_WIDTH / 2) + (password_box.box.width / 2) - 350), (int) (password_box.box.y + password_box.box.height + 2), 20, RED);
+  }
 
-  if (isAuthenticated == false)
+  if (isAuthenticated == false && password_box.isActive == false)
     DrawText("Invalid credentials. Try again.", (int) ((WINDOW_WIDTH / 2) + (password_box.box.width / 2) - 314), (int) (password_box.box.y + password_box.box.height + 2), 20, RED);
 
   // Change color on hover

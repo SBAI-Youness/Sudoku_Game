@@ -45,23 +45,30 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, stru
     // Clear the 'name' and 'password' fields by setting all bytes to '\0'
     memset(player->name, '\0', MAX_NAME_LENGTH);
     memset(player->password, '\0', MAX_PASSWORD_LENGTH);
+
+    (*isNameUnique) = true;
+
+    ResetInputBoxes(name_box, password_box);
   }
 
   // Check if the Sign Up button was clicked
   if ((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(mouse_position, sign_up_button) == true) || (password_box->isActive == true && IsKeyPressed(KEY_ENTER) == true)) {
-    // Validate name input
-    name_box->isEmpty = (strlen(player->name) == 0);
+    // Set isNameUnique to true by default
+    (*isNameUnique) = true;
 
-    // Validate password input
-    password_box->isEmpty = (strlen(player->password) == 0);
+    // Validate fields
+    struct ValidationResult name_result = ValidateNameInRealTime(player->name),
+                            password_result = ValidatePasswordInRealTime(player->password);
+    
+    name_box->isValid = name_result.isValid;
+    password_box->isValid = password_result.isValid;
 
-    // Only proceed if both fields are filled
-    if (name_box->isEmpty == false && password_box->isEmpty == false) {
+    // Only proceed if both fields are valid
+    if (name_box->isValid == true && password_box->isValid == true) {
       if (isNameTaken(player->name) == true)
         (*isNameUnique) = false;
       else {
-        (*isNameUnique) = true;
-        player->SavePlayer(player); // Save the player's info to the plauer's file
+        player->SavePlayer(player);
         ChangeGameState(game_state, MAIN_MENU);
       }
     }
@@ -113,22 +120,28 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struc
     // Clear the 'name' and 'password' fields by setting all bytes to '\0'
     memset(player->name, '\0', MAX_NAME_LENGTH);
     memset(player->password, '\0', MAX_PASSWORD_LENGTH);
+
+    (*isAuthenticated) = true;
+
+    ResetInputBoxes(name_box, password_box);
   }
 
   // Check if the Log In button was clicked
   if ((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(mouse_position, log_in_button) == true) || (password_box->isActive == true && IsKeyPressed(KEY_ENTER))) {
-    // Validate name input
-    name_box->isEmpty = (strlen(player->name) == 0);
+    // Set isAuthenticated to true by default
+    (*isAuthenticated) = true;
 
-    // Validate password input
-    password_box->isEmpty = (strlen(player->password) == 0);
+    // Validate fields
+    struct ValidationResult name_result = ValidateNameInRealTime(player->name),
+                            password_result = ValidatePasswordInRealTime(player->password);
+    
+    name_box->isValid = name_result.isValid;
+    password_box->isValid = password_result.isValid;
 
-    // Only proceed if both fields are filled
-    if (name_box->isEmpty == false && password_box->isEmpty == false) {
-      if (AuthenticatePlayer(player) == true) {
-        (*isAuthenticated) = true;
+    // Only proceed if both fields are valid
+    if (name_box->isValid == true && password_box->isValid == true) {
+      if (AuthenticatePlayer(player) == true)
         ChangeGameState(game_state, MAIN_MENU);
-      }
       else
         (*isAuthenticated) = false;
     }
