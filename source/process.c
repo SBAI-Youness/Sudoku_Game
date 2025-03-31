@@ -33,10 +33,14 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, stru
   }
 
   // Handle text input when the box is active
-  if (name_box->isActive == true && password_box->isActive == false)
+  if (name_box->isActive == true && password_box->isActive == false) {
     player->SetName(player);
-  else if (name_box->isActive == false && password_box->isActive == true)
+    ValidateNameInRealTime(player->name, &name_box->validation);
+  }
+  else if (name_box->isActive == false && password_box->isActive == true) {
     player->SetPassword(player);
+    ValidatePasswordInRealTime(player->password, &password_box->validation);
+  }
 
   // Check for click
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(GetMousePosition(), log_in_box) == true) {
@@ -56,15 +60,12 @@ void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, stru
     // Set isNameUnique to true by default
     (*isNameUnique) = true;
 
-    // Validate fields
-    struct ValidationResult name_result = ValidateNameInRealTime(player->name),
-                            password_result = ValidatePasswordInRealTime(player->password);
-    
-    name_box->isValid = name_result.isValid;
-    password_box->isValid = password_result.isValid;
+    // Validate the input fields
+    ValidateNameInRealTime(player->name, &name_box->validation);
+    ValidatePasswordInRealTime(player->password, &password_box->validation);
 
     // Only proceed if both fields are valid
-    if (name_box->isValid == true && password_box->isValid == true) {
+    if (name_box->validation.isValid == true && password_box->validation.isValid == true) {
       if (isNameTaken(player->name) == true)
         (*isNameUnique) = false;
       else {
@@ -108,10 +109,14 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struc
   }
 
   // Handle text input when the box is active
-  if (name_box->isActive == true && password_box->isActive == false)
+  if (name_box->isActive == true && password_box->isActive == false) {
     player->SetName(player);
-  else if (name_box->isActive == false && password_box->isActive == true)
+    ValidateNameInRealTime(player->name, &name_box->validation);
+  }
+  else if (name_box->isActive == false && password_box->isActive == true) {
     player->SetPassword(player);
+    ValidatePasswordInRealTime(player->password, &password_box->validation);
+  }
 
   // Check for click
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true && CheckCollisionPointRec(GetMousePosition(), sign_up_box) == true) {
@@ -132,14 +137,11 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struc
     (*isAuthenticated) = true;
 
     // Validate fields
-    struct ValidationResult name_result = ValidateNameInRealTime(player->name),
-                            password_result = ValidatePasswordInRealTime(player->password);
-    
-    name_box->isValid = name_result.isValid;
-    password_box->isValid = password_result.isValid;
+    ValidateNameInRealTime(player->name, &name_box->validation);
+    ValidatePasswordInRealTime(player->password, &password_box->validation);
 
     // Only proceed if both fields are valid
-    if (name_box->isValid == true && password_box->isValid == true) {
+    if (name_box->validation.isValid == true && password_box->validation.isValid == true) {
       if (AuthenticatePlayer(player) == true)
         ChangeGameState(game_state, MAIN_MENU);
       else

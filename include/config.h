@@ -27,16 +27,16 @@ enum GAME_STATE {
   PLAYING
 };
 
-struct InputBox {
-  Rectangle box;  // Input field dimension
-  bool isActive; // Flag to track if the input field is active or not
-  bool isValid; // Flag to track if the input field is valid or not
-};
-
 // Structure to store the results of the validation
 struct ValidationResult {
   bool isValid;
   const char *error_message;
+};
+
+struct InputBox {
+  Rectangle box;  // Input field dimension
+  bool isActive; // Flag to track if the input field is active or not
+  struct ValidationResult validation; // Structure to track if the input field is valid or not, with an error message
 };
 
 // Function used to initialize the window and game settings

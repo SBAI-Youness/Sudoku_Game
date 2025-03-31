@@ -5,12 +5,18 @@ void HandleSignUpProcess(struct Player *player, enum GAME_STATE *game_state, Tex
   static struct InputBox name_box = {
     .box = { (WINDOW_WIDTH / 2) - 200, 200, 400, 50},
     .isActive = false,
-    .isValid = true
+    .validation = {
+      .isValid = true,
+      .error_message = NULL
+    }
   },
   password_box = {
     .box = { (WINDOW_WIDTH / 2) - 200, 300, 400, 50},
     .isActive = false,
-    .isValid = true
+    .validation = {
+      .isValid = true,
+      .error_message = NULL
+    }
   };
 
   // Flag to track if the name is usique or not
@@ -40,12 +46,18 @@ void HandleLogInProcess(struct Player *player, enum GAME_STATE *game_state, Text
   static struct InputBox name_box = {
     .box = { (WINDOW_WIDTH / 2) - 200, 200, 400, 50},
     .isActive = false,
-    .isValid = true
+    .validation = {
+      .isValid = true,
+      .error_message = NULL
+    }
   },
   password_box = {
     .box = { (WINDOW_WIDTH / 2) - 200, 300, 400, 50},
     .isActive = false,
-    .isValid = true
+    .validation = {
+      .isValid = true,
+      .error_message = NULL
+    }
   };
 
   // Flag to track if the player is authenticated or not

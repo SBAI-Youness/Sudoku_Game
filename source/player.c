@@ -54,43 +54,34 @@ void SetName(struct Player *self) {
     self->name[strlen(self->name) - 1] = '\0';
 }
 
-struct ValidationResult ValidateNameInRealTime(const char *name) {
-  struct ValidationResult result = {
-    .isValid = true,
-    .error_message = NULL
-  };
+void ValidateNameInRealTime(const char *name, struct ValidationResult *name_validation) {
+  name_validation->isValid = true;
+  name_validation->error_message = NULL;
 
   if (name == NULL || strlen(name) == 0) {
-    result.isValid = false;
-    result.error_message = "Name cannot be empty";
-    return result;
+    name_validation->isValid = false;
+    name_validation->error_message = "Name cannot be empty";
   }
 
   if (HasNoLeadingOrTrailingSpaces(name) == false) {
-    result.isValid = false;
-    result.error_message = "Name cannot begin or end with a space";
-    return result;
+    name_validation->isValid = false;
+    name_validation->error_message = "Name cannot begin or end with a space";
   }
 
   if (HasNoConsecutiveSpaces(name) == false) {
-    result.isValid = false;
-    result.error_message = "Name cannot contain consecutive spaces";
-    return result;
+    name_validation->isValid = false;
+    name_validation->error_message = "Name cannot contain consecutive spaces";
   }
 
   if (HasValidLength(name, MIN_NAME_LENGTH, MAX_NAME_LENGTH) == false) {
-    result.isValid = false;
-    result.error_message = "Name must contain between " STR(MIN_NAME_LENGTH) " and " STR(MAX_NAME_LENGTH) " characters";
-    return result;
+    name_validation->isValid = false;
+    name_validation->error_message = "Name must contain between " STR(MIN_NAME_LENGTH) " and " STR(MAX_NAME_LENGTH) " characters";
   }
 
   if (ContainsOnlyAllowedChars(name) == false) {
-    result.isValid = false;
-    result.error_message = "Name can only contain authorized letters, numbers and special characters";
-    return result;
+    name_validation->isValid = false;
+    name_validation->error_message = "Name can only contain authorized letters, numbers and special characters";
   }
-
-  return result;
 }
 
 void SetPassword(struct Player *self) {
@@ -111,43 +102,34 @@ void SetPassword(struct Player *self) {
     self->password[strlen(self->password) - 1] = '\0';
 }
 
-struct ValidationResult ValidatePasswordInRealTime(const char *password) {
-  struct ValidationResult result = {
-    .isValid = true,
-    .error_message = NULL
-  };
+void ValidatePasswordInRealTime(const char *password, struct ValidationResult *password_validation) {
+  password_validation->isValid = true;
+  password_validation->error_message = NULL;
 
   if (password == NULL || strlen(password) == 0) {
-    result.isValid = false;
-    result.error_message = "Password cannot be empty";
-    return result;
+    password_validation->isValid = false;
+    password_validation->error_message = "Password cannot be empty";
   }
 
   if (HasNoLeadingOrTrailingSpaces(password) == false) {
-    result.isValid = false;
-    result.error_message = "Password cannot begin or end with a space";
-    return result;
+    password_validation->isValid = false;
+    password_validation->error_message = "Password cannot begin or end with a space";
   }
 
   if (HasNoConsecutiveSpaces(password) == false) {
-    result.isValid = false;
-    result.error_message = "Password cannot contain consecutive spaces";
-    return result;
+    password_validation->isValid = false;
+    password_validation->error_message = "Password cannot contain consecutive spaces";
   }
 
   if (HasValidLength(password, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH) == false) {
-    result.isValid = false;
-    result.error_message = "Password must contain between " STR(MIN_PASSWORD_LENGTH) " and " STR(MAX_PASSWORD_LENGTH) " characters";
-    return result;
+    password_validation->isValid = false;
+    password_validation->error_message = "Password must contain between " STR(MIN_PASSWORD_LENGTH) " and " STR(MAX_PASSWORD_LENGTH) " characters";
   }
 
   if (ContainsOnlyAllowedChars(password) == false) {
-    result.isValid = false;
-    result.error_message = "Password can only contain authorized letters, numbers and special characters";
-    return result;
+    password_validation->isValid = false;
+    password_validation->error_message = "Password can only contain authorized letters, numbers and special characters";
   }
-
-  return result;
 }
 
 bool ContainsOnlyAllowedChars(const char *str) {

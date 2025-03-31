@@ -36,13 +36,13 @@ extern void SetPlayerMethods(struct Player *player);
 extern void SetName(struct Player *self);
 
 // Function used to validate the name in real time
-extern struct ValidationResult ValidateNameInRealTime(const char *name);
+extern void ValidateNameInRealTime(const char *name, struct ValidationResult *name_validation);
 
 // Function used to read and set the password for a player
 extern void SetPassword(struct Player *self);
 
 // Function used to validate the password in real time
-extern struct ValidationResult ValidatePasswordInRealTime(const char *password);
+extern void ValidatePasswordInRealTime(const char *password, struct ValidationResult *password_validation);
 
 // Function used to check if a string contains only the allowed characters
 extern bool ContainsOnlyAllowedChars(const char *str);

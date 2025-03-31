@@ -21,8 +21,11 @@ void ResetInputBoxes(struct InputBox *name_box, struct InputBox *password_box) {
   name_box->isActive = false;
   password_box->isActive = false;
 
-  name_box->isValid = true;
-  password_box->isValid = true;
+  name_box->validation.isValid = true;
+  password_box->validation.isValid = true;
+
+  name_box->validation.error_message = NULL;
+  password_box->validation.error_message = NULL;
 }
 
 void CloseWindowAndCleanUp() {

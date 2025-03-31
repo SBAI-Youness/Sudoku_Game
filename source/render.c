@@ -81,22 +81,18 @@ void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture, Textur
   }
 
   // Draw error messages if fields are invalid
-  if (name_box.isValid == false && name_box.isActive == false) {
-    struct ValidationResult result = ValidateNameInRealTime(player->name);
-
+  if (name_box.validation.isValid == false && name_box.isActive == false) {
     if (strlen(player->name) == 0)
       DrawTexture(required_image_texture, (int) (name_box.box.x + name_box.box.width - 33), (int) (name_box.box.y + 10), WHITE);
     else
-      DrawText(result.error_message, (int) ((WINDOW_WIDTH / 2) + (name_box.box.width / 2) - 350), (int) (name_box.box.y + name_box.box.height + 2), 20, RED);
+      DrawText(name_box.validation.error_message, (int) ((WINDOW_WIDTH / 2) + (name_box.box.width / 2) - 350), (int) (name_box.box.y + name_box.box.height + 2), 20, RED);
   }
 
-  if (password_box.isValid == false && password_box.isActive == false) {
-    struct ValidationResult result = ValidatePasswordInRealTime(player->password);
-
+  if (password_box.validation.isValid == false && password_box.isActive == false) {
     if (strlen(player->password) == 0)
       DrawTexture(required_image_texture, (int) (password_box.box.x + password_box.box.width - 33), (int) (password_box.box.y + 10), WHITE);
     else
-      DrawText(result.error_message, (int) ((WINDOW_WIDTH / 2) + (password_box.box.width / 2) - 350), (int) (password_box.box.y + password_box.box.height + 2), 20, RED);
+      DrawText(password_box.validation.error_message, (int) ((WINDOW_WIDTH / 2) + (password_box.box.width / 2) - 350), (int) (password_box.box.y + password_box.box.height + 2), 20, RED);
   }
 
   // Change color on hover
@@ -177,20 +173,18 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture
   }
 
   // Draw error messages if fields are invalid
-  if (name_box.isValid == false && name_box.isActive == false) {
-    struct ValidationResult result = ValidateNameInRealTime(player->name);
+  if (name_box.validation.isValid == false && name_box.isActive == false) {
     if (strlen(player->name) == 0)
       DrawTexture(required_image_texture, (int) (name_box.box.x + name_box.box.width - 33), (int) (name_box.box.y + 10), WHITE);
     else
-      DrawText(result.error_message, (int) ((WINDOW_WIDTH / 2) + (name_box.box.width / 2) - 350), (int) (name_box.box.y + name_box.box.height + 2), 20, RED);
+      DrawText(name_box.validation.error_message, (int) ((WINDOW_WIDTH / 2) + (name_box.box.width / 2) - 350), (int) (name_box.box.y + name_box.box.height + 2), 20, RED);
   }
-  
-  if (password_box.isValid == false && password_box.isActive == false) {
-    struct ValidationResult result = ValidatePasswordInRealTime(player->password);
+
+  if (password_box.validation.isValid == false && password_box.isActive == false) {
     if (strlen(player->password) == 0)
       DrawTexture(required_image_texture, (int) (password_box.box.x + password_box.box.width - 33), (int) (password_box.box.y + 10), WHITE);
     else
-      DrawText(result.error_message, (int) ((WINDOW_WIDTH / 2) + (password_box.box.width / 2) - 350), (int) (password_box.box.y + password_box.box.height + 2), 20, RED);
+      DrawText(password_box.validation.error_message, (int) ((WINDOW_WIDTH / 2) + (password_box.box.width / 2) - 350), (int) (password_box.box.y + password_box.box.height + 2), 20, RED);
   }
 
   if (isAuthenticated == false && password_box.isActive == false)
