@@ -1,21 +1,36 @@
-# Compiler and flags
+# Detect OS
+OS := $(shell uname -s)
+
+# Compiler and common flags
 CC = gcc
 CFLAGS = -Iinclude -Wall -Werror -Wextra -Wpedantic
-LDFLAGS = -Llibraries -lraylib -lopengl32 -lgdi32 -lwinmm
 
 # Directories and source files
 SRC := $(wildcard ./source/*.c)
 BUILD = build
 
-# Target executable
-TARGET = $(BUILD)/main.exe
+# Platform-specific settings
+ifeq ($(OS),Linux)
+  LDFLAGS = -Llibraries -lraylib -lm -ldl -lpthread -lGL -lX11
+  TARGET = $(BUILD)/main
+  MKDIR = mkdir -p $(BUILD)
+  RMDIR = rm -rf $(BUILD)
+  RUN = ./$(TARGET)
+else
+  # Assume Windows (for MSYS/MinGW)
+  LDFLAGS = -Llibraries -lraylib -lopengl32 -lgdi32 -lwinmm
+  TARGET = $(BUILD)/main.exe
+  MKDIR = if not exist $(BUILD) mkdir $(BUILD)
+  RMDIR = rmdir /S /Q $(BUILD)
+  RUN = $(TARGET)
+endif
 
 # Default target
 all: $(TARGET)
 
 # Create the build directory if it doesn't exist
 $(BUILD):
-	@if not exist $(BUILD) mkdir $(BUILD)
+	$(MKDIR)
 
 # Build target for app
 $(TARGET): $(SRC) | $(BUILD)
@@ -23,9 +38,10 @@ $(TARGET): $(SRC) | $(BUILD)
 
 # Run the program after building
 run: $(TARGET)
-	@$(TARGET)
+	@$(RUN)
 
+# Clean the build directory
 clean:
-	rmdir /S /Q $(BUILD)
+	$(RMDIR)
 
 .PHONY: all clean run
