@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include "./raylib.h"
 
 #define GAME_NAME "Sudoku Game"
@@ -24,7 +25,10 @@ enum GAME_STATE {
   LOG_IN,
   MAIN_MENU,
   MODE_MENU,
-  PLAYING
+  TUTORIAL,
+  PLAYING,
+  LOADING,
+  EXIT
 };
 
 // Structure to store the results of the validation
@@ -47,6 +51,9 @@ extern void ChangeGameState(enum GAME_STATE *game_state, enum GAME_STATE new_sta
 
 // Function used to reset the input boxes while signing up or logging in
 extern void ResetInputBoxes(struct InputBox *name_box, struct InputBox *password_box);
+
+// Function used to draw a spinning trail effect (like a login/loading spinner)
+extern void DrawSpinner(Vector2 center, float radius, int trail_count, float circle_size, Color color, float time);
 
 // Function used to close the window and clean up resources
 extern void CloseWindowAndCleanUp();

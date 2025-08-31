@@ -207,3 +207,26 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture
 
   DrawText("Log In", text_x_position, text_y_position, 20, WHITE);
 }
+
+void RenderGameMenuPage(struct Player *player, Texture2D game_icon_texture, Rectangle menu_buttons[], const char *game_menu_text[], int menu_count) {
+  // Draw game icon in the top right corner
+  DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
+
+  // Get the current mouse position
+  Vector2 mouse_position = GetMousePosition();
+
+  for (int i = 0; i < menu_count; i++) {
+    // Check if the button is hovered
+    bool hover = CheckCollisionPointRec(mouse_position, menu_buttons[i]);
+
+    // Draw button background
+    DrawRectangleRec(menu_buttons[i], (hover == true)? (Color) { 173, 216, 230, 255} : BLUE);
+
+    // Center text inside button
+    int text_width = MeasureText(game_menu_text[i], 20),
+        text_x = menu_buttons[i].x + (menu_buttons[i].width / 2) - (text_width / 2),
+        text_y = menu_buttons[i].y + (menu_buttons[i].height / 2) - (20 / 2);
+
+    DrawText(game_menu_text[i], text_x, text_y, 20, BLACK);
+  }
+}

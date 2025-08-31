@@ -28,6 +28,23 @@ void ResetInputBoxes(struct InputBox *name_box, struct InputBox *password_box) {
   password_box->validation.error_message = NULL;
 }
 
+void DrawSpinner(Vector2 center, float radius, int trail_count, float circle_size, Color color, float time) {
+  for (int i = 0; i < trail_count; i++) {
+    // Spread dots evenly around the circle
+    float angle = time + ((2 * PI) / trail_count) * i;
+
+    float x = center.x + cosf(angle) * radius;
+    float y = center.y + sinf(angle) * radius;
+
+    // Fade based on position in the circle (smooth gradient)
+    unsigned char alpha = (unsigned char) (80 + 175.0f * ((float) i / trail_count));
+
+    Color faded = (Color) {color.r, color.g, color.b, alpha};
+
+    DrawCircle((int) x, (int) y, circle_size, faded);
+  }
+}
+
 void CloseWindowAndCleanUp() {
   // Close the window and OpenGL context
   CloseWindow();

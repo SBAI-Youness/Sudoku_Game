@@ -149,3 +149,31 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struc
     }
   }
 }
+
+void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_state, Rectangle menu_buttons[], int menu_count) {
+  // Get the current mouse position
+  Vector2 mouse_position = GetMousePosition();
+
+  for (int i = 0; i < menu_count; i++) {
+    if (CheckCollisionPointRec(mouse_position, menu_buttons[i]) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+
+      switch (i) {
+        case 0: // "New Game"
+          ChangeGameState(game_state, PLAYING);  // Start fresh
+          break;
+
+        case 1: // "Continue Game"
+          ChangeGameState(game_state, PLAYING);  // Resume
+          break;
+
+        case 2: // "How to Play"
+          ChangeGameState(game_state, TUTORIAL);  // Go to tutorial/help
+          break;
+
+        case 3: // "Log Out"
+          ChangeGameState(game_state, SIGN_UP); // Go to sign up page
+          break;
+      }
+    }
+  }
+}

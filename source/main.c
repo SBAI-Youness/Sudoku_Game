@@ -3,12 +3,18 @@
 #include "../include/player.h"
 #include "../include/process.h"
 #include "../include/auth.h"
+#include "../include/menu.h"
 
 int main() {
   InitializeWindowAndSettings();
 
   // Define the initial game state as SIGN_UP
   enum GAME_STATE game_state = SIGN_UP;
+
+  // Spinner timer
+  float spinnerTime = 0.0f;
+  float spinnerElapsed = 0.0f;
+  const float spinnerDuration = 1.0f;
 
   // Load an image texture
   Texture2D game_icon_texture = LoadResizedTexture("../assets/icons/game_icon.png", WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8),
@@ -19,6 +25,8 @@ int main() {
 
   // Main game loop: runs until the window is closed
   while (WindowShouldClose() == false) {
+    float dt = GetFrameTime();
+
     // Begin drawing the frame
     BeginDrawing();
 
@@ -37,6 +45,13 @@ int main() {
 
         HandleSignUpProcess(player, &game_state, game_icon_texture, required_image_texture);
 
+        if (game_state == MAIN_MENU) {
+          ChangeGameState(&game_state, LOADING);
+
+          spinnerTime = 0;
+          spinnerElapsed = 0;
+        }
+
         break;
 
       case LOG_IN:
@@ -50,19 +65,56 @@ int main() {
 
         HandleLogInProcess(player, &game_state, game_icon_texture, required_image_texture);
 
+        if (game_state == MAIN_MENU) {
+          ChangeGameState(&game_state, LOADING);
+
+          spinnerTime = 0;
+          spinnerElapsed = 0;
+        }
+
         break;
 
       case MAIN_MENU:
+
+        HandleGameMenuProcess(player, &game_state, game_icon_texture);
+
         break;
+
       case MODE_MENU:
+        DrawText("Mode Menu", 0, 0, 20, RED);
         break;
+
+      case TUTORIAL:
+        DrawText("Tutorial", 0, 0, 20, RED);
+        break;
+
       case PLAYING:
+        DrawText("Playing", 0, 0, 20, RED);
+        break;
+
+      case LOADING:
+        spinnerElapsed += dt;
+        spinnerTime += dt * 2.0f; // spin speed
+
+        DrawSpinner((Vector2) {WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2}, 18.0f, 28, 7.0f, SKYBLUE, spinnerTime);
+
+        if (spinnerElapsed >= spinnerDuration) {
+          ChangeGameState(&game_state, MAIN_MENU);
+        }
+
+        break;
+
+      case EXIT:
+        goto clean_up;
         break;
     }
 
     // End the drawing of the current frame
     EndDrawing();
   }
+
+  // Cleanup resources
+  clean_up:
 
   // Cleanup: Free player before exiting
   if (player != NULL)

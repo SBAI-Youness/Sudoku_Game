@@ -1,0 +1,36 @@
+#include "../include/menu.h"
+
+void HandleGameMenuProcess(struct Player *player, enum GAME_STATE *game_state, Texture2D game_icon_texture) {
+  // Define the text for each menu option
+  const char *game_menu_option[] = { "New Game",
+                                     "Continue Game",
+                                     "How to Play",
+                                     "Log Out"};
+
+  // Count how many menu items exist
+  int menu_count = sizeof(game_menu_option) / sizeof(game_menu_option[0]);
+
+  // Store each menu option's clickable area as a Rectangle
+  Rectangle menu_buttons[menu_count];
+
+  // Layout settings
+  int start_y = 200, // Where the first option will be drawn vertically
+      spacing = 60,  // Vertical spacing between menu items
+      button_width = 250, // Fixed width for all buttons
+      button_height = 50; // Fixed height for all buttons
+
+  // Precompute button rectangles for each menu option
+  for (int i = 0; i < menu_count; i++) {
+    int button_x = (WINDOW_WIDTH / 2) - (button_width / 2),
+        button_y = start_y + (i * spacing);
+
+    // Save button rectangle for drawing and input detection
+    menu_buttons[i] = (Rectangle) { button_x, button_y, button_width, button_height};
+  }
+
+  // Process the input for the game menu
+  ProcessGameMenuInput(player, game_state, menu_buttons, menu_count);
+
+  // Render the game menu with the appropriate elements (game menu options)
+  RenderGameMenuPage(player, game_icon_texture, menu_buttons, game_menu_option, menu_count);
+}
