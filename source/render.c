@@ -208,7 +208,7 @@ void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture
   DrawText("Log In", text_x_position, text_y_position, 20, WHITE);
 }
 
-void RenderGameMenuPage(struct Player *player, Texture2D game_icon_texture, Rectangle menu_buttons[], const char *game_menu_text[], int menu_count) {
+void RenderGameMenuPage(Texture2D game_icon_texture, Rectangle menu_buttons[], const char *game_menu_text[], int menu_count, int selected_button) {
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
@@ -220,7 +220,7 @@ void RenderGameMenuPage(struct Player *player, Texture2D game_icon_texture, Rect
     bool hover = CheckCollisionPointRec(mouse_position, menu_buttons[i]);
 
     // Draw button background
-    DrawRectangleRec(menu_buttons[i], (hover == true)? (Color) { 173, 216, 230, 255} : BLUE);
+    DrawRectangleRec(menu_buttons[i], (hover == true || selected_button == i)? (Color) { 173, 216, 230, 255} : BLUE);
 
     // Center text inside button
     int text_width = MeasureText(game_menu_text[i], 20),

@@ -13,7 +13,7 @@ extern void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_stat
 extern void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struct InputBox *name_box, struct InputBox *password_box, bool *isAuthenticated, Rectangle sign_up_box, Rectangle log_in_button);
 
 // Function used to process the player input while being in the game menu
-extern void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_state, Rectangle menu_buttons[], int menu_count);
+extern void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_state, Rectangle menu_buttons[], int menu_count, int *selected_button);
 
 // Function used to process the player input while being in the tutorial screen
 extern void ProcessTutorialInput(enum GAME_STATE *game_state, Rectangle back_button);

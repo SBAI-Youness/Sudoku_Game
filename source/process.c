@@ -150,12 +150,53 @@ void ProcessLogInInput(struct Player *player, enum GAME_STATE *game_state, struc
   }
 }
 
-void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_state, Rectangle menu_buttons[], int menu_count) {
+void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_state, Rectangle menu_buttons[], int menu_count, int *selected_button) {
   // Get the current mouse position
   Vector2 mouse_position = GetMousePosition();
 
+  // Keyboard navigation
+  if (IsKeyPressed(KEY_TAB)) {
+    if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
+      // Shift + Tab -> go backwards
+      (*selected_button)--;
+      if (*selected_button < 0) {
+        *selected_button = menu_count - 1;
+      }
+    } else {
+      // Normal Tab -> go forwards
+      (*selected_button)++;
+      if (*selected_button >= menu_count) {
+        *selected_button = 0;
+      }
+    }
+  }
+
+  // If user presses Enter/Space, activate the selected button
+  if (*selected_button >= 0 && IsKeyPressed(KEY_ENTER)) {
+    switch (*selected_button) {
+      case 0: // "New Game"
+        ChangeGameState(game_state, PLAYING);
+        break;
+
+      case 1: // "Continue Game"
+        ChangeGameState(game_state, PLAYING);
+        break;
+
+      case 2: // "How to Play"
+        ChangeGameState(game_state, TUTORIAL);
+        break;
+
+      case 3: // "Log Out"
+        player->name[0] = '\0';
+        player->password[0] = '\0';
+        ChangeGameState(game_state, SIGN_UP);
+        break;
+    }
+  }
+
   for (int i = 0; i < menu_count; i++) {
     if (CheckCollisionPointRec(mouse_position, menu_buttons[i]) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+      *selected_button = i; // sync selection with mouse click
 
       switch (i) {
         case 0: // "New Game"
@@ -171,7 +212,12 @@ void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_state, Re
           break;
 
         case 3: // "Log Out"
-          ChangeGameState(game_state, SIGN_UP); // Go to sign up page
+          // Reset player credentials
+          player->name[0] = '\0';
+          player->password[0] = '\0';
+
+          // Go to sign up page
+          ChangeGameState(game_state, SIGN_UP);
           break;
       }
     }

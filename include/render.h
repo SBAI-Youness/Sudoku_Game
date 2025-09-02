@@ -15,7 +15,7 @@ extern void RenderSignUpPage(struct Player *player, Texture2D game_icon_texture,
 extern void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, Texture2D required_image_texture, struct InputBox name_box, struct InputBox password_box, bool isAuthenticated, Rectangle sign_up_box, Vector2 sign_up_text_position, const char *sign_up_text, Rectangle log_in_button);
 
 // Function used to render the game menu
-extern void RenderGameMenuPage(struct Player *player, Texture2D game_icon_texture, Rectangle menu_buttons[], const char *game_menu_text[], int menu_count);
+extern void RenderGameMenuPage(Texture2D game_icon_texture, Rectangle menu_buttons[], const char *game_menu_text[], int menu_count, int selected_button);
 
 // Function used to render the instrctions page
 extern void RenderTutorialPage(Texture2D game_icon_texture, Texture2D back_image_texture);
