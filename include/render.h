@@ -16,3 +16,6 @@ extern void RenderLogInPage(struct Player *player, Texture2D game_icon_texture, 
 
 // Function used to render the game menu
 extern void RenderGameMenuPage(struct Player *player, Texture2D game_icon_texture, Rectangle menu_buttons[], const char *game_menu_text[], int menu_count);
+
+// Function used to render the instrctions page
+extern void RenderTutorialPage(Texture2D game_icon_texture, Texture2D back_image_texture);

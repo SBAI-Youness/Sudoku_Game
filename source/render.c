@@ -230,3 +230,41 @@ void RenderGameMenuPage(struct Player *player, Texture2D game_icon_texture, Rect
     DrawText(game_menu_text[i], text_x, text_y, 20, BLACK);
   }
 }
+
+void RenderTutorialPage(Texture2D game_icon_texture, Texture2D back_image_texture) {
+  // Draw game icon in the top right corner
+  DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
+
+  // Draw the back sign image
+  DrawTexture(back_image_texture, 10, 10, WHITE);
+
+  // Title settings
+  int title_font = 30;
+  const char *title = "How To Play Sudoku";
+  int title_width = MeasureText(title, title_font);
+  DrawText(title, (WINDOW_WIDTH - title_width) / 2, 100, title_font, DARKBLUE);
+
+  // Text lines
+  const char *lines[] = {
+      "- Fill the 9x9 grid so each row, column,",
+      "  and 3x3 box contains the numbers 1-9.",
+      "- Each number can only appear once per row,",
+      "  column, and box.",
+      "- Click a cell, then enter a number (1-9).",
+      "- Use BACKSPACE or 0 to erase a number.",
+      "- Complete the board correctly to win!"
+  };
+  int line_count = sizeof(lines) / sizeof(lines[0]);
+
+  // Text rendering settings
+  int font_size = 20;
+  int line_spacing = 40;
+  int y = 180; // starting Y under title
+
+  // Loop through each line of instructions and draw them centered
+  for (int i = 0; i < line_count; i++) {
+    int text_width = MeasureText(lines[i], font_size);
+    DrawText(lines[i], (WINDOW_WIDTH - text_width) / 2, y, font_size, BLACK);
+    y += line_spacing; // Move down for the next line
+  }
+}

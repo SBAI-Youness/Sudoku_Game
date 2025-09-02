@@ -177,3 +177,12 @@ void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_state, Re
     }
   }
 }
+
+void ProcessTutorialInput(enum GAME_STATE *game_state, Rectangle back_button) {
+  // Get the current mouse position
+  Vector2 mouse_position = GetMousePosition();
+
+  if (CheckCollisionPointRec(mouse_position, back_button) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    ChangeGameState(game_state, MAIN_MENU);
+  }
+}

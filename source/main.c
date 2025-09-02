@@ -4,6 +4,7 @@
 #include "../include/process.h"
 #include "../include/auth.h"
 #include "../include/menu.h"
+#include "../include/tutorial.h"
 
 int main() {
   InitializeWindowAndSettings();
@@ -18,7 +19,8 @@ int main() {
 
   // Load an image texture
   Texture2D game_icon_texture = LoadResizedTexture("../assets/icons/game_icon.png", WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8),
-            required_image_texture = LoadResizedTexture("../assets/images/required.png", 28, 28);
+            required_image_texture = LoadResizedTexture("../assets/images/required.png", 28, 28),
+            back_image_texture = LoadResizedTexture("../assets/images/back.png", 28, 28);
 
   // Create a player pointer (NULL initially)
   struct Player *player = NULL;
@@ -75,9 +77,7 @@ int main() {
         break;
 
       case MAIN_MENU:
-
         HandleGameMenuProcess(player, &game_state, game_icon_texture);
-
         break;
 
       case MODE_MENU:
@@ -85,7 +85,7 @@ int main() {
         break;
 
       case TUTORIAL:
-        DrawText("Tutorial", 0, 0, 20, RED);
+        HandleTutorialProcess(&game_state, game_icon_texture, back_image_texture);
         break;
 
       case PLAYING:
@@ -123,6 +123,7 @@ int main() {
   // Unload textures
   UnloadTexture(required_image_texture);
   UnloadTexture(game_icon_texture);
+  UnloadTexture(back_image_texture);
 
   CloseWindowAndCleanUp();
 
