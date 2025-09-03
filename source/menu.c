@@ -36,3 +36,25 @@ void HandleGameMenuProcess(struct Player *player, enum GAME_STATE *game_state, T
   // Render the game menu with the appropriate elements (game menu options)
   RenderGameMenuPage(game_icon_texture, menu_buttons, game_menu_option, menu_count, selected_button);
 }
+
+void HandleGameMenuAction(struct Player *player, enum GAME_STATE *game_state, int selected_button) {
+  switch (selected_button) {
+    case 0: // "New Game"
+      ChangeGameState(game_state, MODE_MENU);
+      break;
+
+    case 1: // "Continue Game"
+      ChangeGameState(game_state, PLAYING);
+      break;
+
+    case 2: // "How to Play"
+      ChangeGameState(game_state, TUTORIAL);
+      break;
+
+    case 3: // "Log Out"
+      player->name[0] = '\0';
+      player->password[0] = '\0';
+      ChangeGameState(game_state, SIGN_UP);
+      break;
+  }
+}

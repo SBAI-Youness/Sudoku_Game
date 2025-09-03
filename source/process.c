@@ -173,53 +173,14 @@ void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_state, Re
 
   // If user presses Enter/Space, activate the selected button
   if (*selected_button >= 0 && IsKeyPressed(KEY_ENTER)) {
-    switch (*selected_button) {
-      case 0: // "New Game"
-        ChangeGameState(game_state, PLAYING);
-        break;
-
-      case 1: // "Continue Game"
-        ChangeGameState(game_state, PLAYING);
-        break;
-
-      case 2: // "How to Play"
-        ChangeGameState(game_state, TUTORIAL);
-        break;
-
-      case 3: // "Log Out"
-        player->name[0] = '\0';
-        player->password[0] = '\0';
-        ChangeGameState(game_state, SIGN_UP);
-        break;
-    }
+    HandleGameMenuAction(player, game_state, *selected_button);
   }
 
   for (int i = 0; i < menu_count; i++) {
     if (CheckCollisionPointRec(mouse_position, menu_buttons[i]) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
       *selected_button = i; // sync selection with mouse click
 
-      switch (i) {
-        case 0: // "New Game"
-          ChangeGameState(game_state, PLAYING);  // Start fresh
-          break;
-
-        case 1: // "Continue Game"
-          ChangeGameState(game_state, PLAYING);  // Resume
-          break;
-
-        case 2: // "How to Play"
-          ChangeGameState(game_state, TUTORIAL);  // Go to tutorial/help
-          break;
-
-        case 3: // "Log Out"
-          // Reset player credentials
-          player->name[0] = '\0';
-          player->password[0] = '\0';
-
-          // Go to sign up page
-          ChangeGameState(game_state, SIGN_UP);
-          break;
-      }
+      HandleGameMenuAction(player, game_state, *selected_button);
     }
   }
 }
