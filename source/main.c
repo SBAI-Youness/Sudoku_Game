@@ -4,6 +4,7 @@
 #include "../include/process.h"
 #include "../include/auth.h"
 #include "../include/menu.h"
+#include "../include/difficulty.h"
 #include "../include/tutorial.h"
 
 int main() {
@@ -11,6 +12,9 @@ int main() {
 
   // Define the initial game state as SIGN_UP
   enum GAME_STATE game_state = SIGN_UP;
+
+  // Define the initial game difficulty as EASY
+  enum GAME_DIFFICULTY game_difficulty = EASY;
 
   // Spinner timer
   float spinnerTime = 0.0f;
@@ -81,7 +85,7 @@ int main() {
         break;
 
       case MODE_MENU:
-        DrawText("Mode Menu", 0, 0, 20, RED);
+        HandleDifficultyProcess(player, &game_state, &game_difficulty, game_icon_texture, back_image_texture);
         break;
 
       case TUTORIAL:
@@ -89,7 +93,17 @@ int main() {
         break;
 
       case PLAYING:
-        DrawText("Playing", 0, 0, 20, RED);
+        switch (game_difficulty) {
+          case EASY:
+            DrawText("Easy", 0, 0, 20, RED);
+            break;
+          case MEDIUM:
+            DrawText("Medium", 0, 0, 20, RED);
+            break;
+          case HARD:
+            DrawText("Hard", 0, 0, 20, RED);
+            break;
+        }
         break;
 
       case LOADING:

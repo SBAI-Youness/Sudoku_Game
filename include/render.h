@@ -19,3 +19,6 @@ extern void RenderGameMenuPage(Texture2D game_icon_texture, Rectangle menu_butto
 
 // Function used to render the instrctions page
 extern void RenderTutorialPage(Texture2D game_icon_texture, Texture2D back_image_texture);
+
+// Function used to render the game mode difficulty
+extern void RenderDifficultyPage(Texture2D game_icon_texture, Texture2D back_image_texture, Rectangle difficulty_mode_buttons[], const char *difficulty_mode_text[], int difficulty_mode_count, int selected_button);

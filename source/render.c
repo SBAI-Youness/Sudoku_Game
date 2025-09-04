@@ -212,6 +212,12 @@ void RenderGameMenuPage(Texture2D game_icon_texture, Rectangle menu_buttons[], c
   // Draw game icon in the top right corner
   DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
 
+  // Title: Sudoku Game (centered at the top)
+  const char *title = "Sudoku Game";
+  int title_font_size = 40;
+  int title_width = MeasureText(title, title_font_size);
+  DrawText(title, (WINDOW_WIDTH - title_width) / 2, 100, title_font_size, DARKBLUE);
+
   // Get the current mouse position
   Vector2 mouse_position = GetMousePosition();
 
@@ -266,5 +272,37 @@ void RenderTutorialPage(Texture2D game_icon_texture, Texture2D back_image_textur
     int text_width = MeasureText(lines[i], font_size);
     DrawText(lines[i], (WINDOW_WIDTH - text_width) / 2, y, font_size, BLACK);
     y += line_spacing; // Move down for the next line
+  }
+}
+
+void RenderDifficultyPage(Texture2D game_icon_texture, Texture2D back_image_texture, Rectangle difficulty_mode_buttons[], const char *difficulty_mode_text[], int difficulty_mode_count, int selected_button) {
+  // Draw game icon in the top right corner
+  DrawTexture(game_icon_texture, GAME_ICON_X_POSITION, GAME_ICON_Y_POSITION, WHITE);
+
+  // Draw the back sign image
+  DrawTexture(back_image_texture, 10, 10, WHITE);
+
+  // Title: Choose Difficulty (centered at the top)
+  const char *title = "Choose Difficulty";
+  int title_font_size = 30;
+  int title_width = MeasureText(title, title_font_size);
+  DrawText(title, (WINDOW_WIDTH - title_width) / 2, 100, title_font_size, DARKBLUE);
+
+  // Get the current mouse position
+  Vector2 mouse_position = GetMousePosition();
+
+  for (int i = 0; i < difficulty_mode_count; i++) {
+    // Check if the button is hovered
+    bool hover = CheckCollisionPointRec(mouse_position, difficulty_mode_buttons[i]);
+
+    // Draw button background
+    DrawRectangleRec(difficulty_mode_buttons[i], (hover == true || selected_button == i)? (Color) { 173, 216, 230, 255} : BLUE);
+
+    // Center text inside button
+    int text_width = MeasureText(difficulty_mode_text[i], 20),
+        text_x = difficulty_mode_buttons[i].x + (difficulty_mode_buttons[i].width / 2) - (text_width / 2),
+        text_y = difficulty_mode_buttons[i].y + (difficulty_mode_buttons[i].height / 2) - (20 / 2);
+
+    DrawText(difficulty_mode_text[i], text_x, text_y, 20, BLACK);
   }
 }

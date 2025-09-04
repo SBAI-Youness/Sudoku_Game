@@ -5,6 +5,7 @@
 #include "./config.h"
 #include "./raylib.h"
 #include "./menu.h"
+#include "./difficulty.h"
 
 // Function used to process the player input while signing up
 extern void ProcessSignUpInput(struct Player *player, enum GAME_STATE *game_state, struct InputBox *name_box, bool *isNameUnique, struct InputBox *password_box, Rectangle log_in_box, Rectangle sign_up_button);
@@ -17,3 +18,6 @@ extern void ProcessGameMenuInput(struct Player *player, enum GAME_STATE *game_st
 
 // Function used to process the player input while being in the tutorial screen
 extern void ProcessTutorialInput(enum GAME_STATE *game_state, Rectangle back_button);
+
+// Function used to process the player input while being prompted to choose the game difficulty
+extern void ProcessDifficultyInput(enum GAME_STATE *game_state, enum GAME_DIFFICULTY *game_difficulty, Rectangle difficulty_mode_buttons[], int difficulty_mode_count, int *selected_button, Rectangle back_button);

@@ -193,3 +193,42 @@ void ProcessTutorialInput(enum GAME_STATE *game_state, Rectangle back_button) {
     ChangeGameState(game_state, MAIN_MENU);
   }
 }
+
+void ProcessDifficultyInput(enum GAME_STATE *game_state, enum GAME_DIFFICULTY *game_difficulty, Rectangle difficulty_mode_buttons[], int difficulty_mode_count, int *selected_button, Rectangle back_button) {
+  // Get the current mouse position
+  Vector2 mouse_position = GetMousePosition();
+
+  if (CheckCollisionPointRec(mouse_position, back_button) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    ChangeGameState(game_state, MAIN_MENU);
+  }
+
+  // Keyboard navigation
+  if (IsKeyPressed(KEY_TAB)) {
+    if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
+      // Shift + Tab -> go backwards
+      (*selected_button)--;
+      if (*selected_button < 0) {
+        *selected_button = difficulty_mode_count - 1;
+      }
+    } else {
+      // Normal Tab -> go forwards
+      (*selected_button)++;
+      if (*selected_button >= difficulty_mode_count) {
+        *selected_button = 0;
+      }
+    }
+  }
+
+  // If user presses Enter, activate the selected button
+  if (*selected_button >= 0 && IsKeyPressed(KEY_ENTER)) {
+    HandleDifficultyAction(game_state, game_difficulty, *selected_button);
+  }
+
+  for (int i = 0; i < difficulty_mode_count; i++) {
+    if (CheckCollisionPointRec(mouse_position, difficulty_mode_buttons[i]) == true && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+      *selected_button = i; // sync selection with mouse click
+
+      HandleDifficultyAction(game_state, game_difficulty, *selected_button);
+    }
+  }
+}

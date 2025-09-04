@@ -31,6 +31,12 @@ enum GAME_STATE {
   EXIT
 };
 
+enum GAME_DIFFICULTY {
+  EASY,
+  MEDIUM,
+  HARD
+};
+
 // Structure to store the results of the validation
 struct ValidationResult {
   bool isValid;
