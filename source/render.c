@@ -306,3 +306,112 @@ void RenderDifficultyPage(Texture2D game_icon_texture, Texture2D back_image_text
     DrawText(difficulty_mode_text[i], text_x, text_y, 20, BLACK);
   }
 }
+
+void RenderPlayingPage(struct Player *player, enum GAME_DIFFICULTY game_difficulty, Texture2D pause_image_texture, struct Cell grid[GRID_SIZE][GRID_SIZE], int selected_row, int selected_column, bool last_move_correct) {
+  // Show difficulty at top-left
+  const char *diff_str = "";
+  switch (game_difficulty) {
+    case EASY:
+      diff_str = "Difficulty: Easy";
+      break;
+    case MEDIUM:
+      diff_str = "Difficulty: Medium";
+      break;
+    case HARD:
+      diff_str = "Difficulty: Hard";
+      break;
+  }
+  DrawText(diff_str, 10, 10, 20, DARKGRAY);
+
+  // Calculate top-left offset so the grid is centered on the screen
+  int grid_x = (WINDOW_WIDTH - (GRID_SIZE * CELL_SIZE)) / 2,
+      grid_y = (WINDOW_HEIGHT - (GRID_SIZE * CELL_SIZE)) / 2;
+
+    double elapsed = GetTime() - player->start_time;
+    int minutes = (int) (elapsed / 60);
+    int seconds = (int) elapsed % 60;
+
+    char timer_text[16];
+    snprintf(timer_text, sizeof(timer_text), "%02d:%02d", minutes, seconds);
+
+    int ttw = MeasureText(timer_text, 20);
+    DrawText(timer_text, WINDOW_WIDTH - ttw - 10, 10, 20, DARKBLUE);
+
+  // Draw grid cells
+  for (int row = 0; row < GRID_SIZE; row++) {
+    for (int col = 0; col < GRID_SIZE; col++) {
+      // Define the rectangle for this cell
+      Rectangle cell = {grid_x + (col * CELL_SIZE), grid_y + (row * CELL_SIZE), CELL_SIZE, CELL_SIZE};
+
+      // Highlight selected cell
+      if (row == selected_row && col == selected_column) {
+        DrawRectangleRec(cell, (Color){200, 230, 255, 255}); // soft blue highlight
+      } else if (grid[row][col].is_fixed) {
+        DrawRectangleRec(cell, (Color){220, 220, 220, 255}); // light gray for fixed cells
+      } else {
+        DrawRectangleRec(cell, RAYWHITE); // white for editable cells
+      }
+
+      // Draw the border of the cell
+      DrawRectangleLinesEx(cell, 1, BLACK);
+
+      // If the cell contains a number, draw it
+      if (grid[row][col].value != 0) {
+        char num[2];
+        snprintf(num, 2, "%d", grid[row][col].value);
+
+        // Measure text width to center number horizontally
+        int tw = MeasureText(num, 20);
+
+        Color text_color;
+        if (grid[row][col].is_fixed == true) {
+          text_color = BLACK;
+        }
+        else if (grid[row][col].is_correct == false) {
+          text_color = RED;  // wrong move stays red
+        }
+        else {
+          text_color = BLUE; // correct player input
+        }
+
+        // If player entered this number and it’s wrong, show RED
+        if (!grid[row][col].is_fixed && row == selected_row && col == selected_column && !last_move_correct) {
+          text_color = RED;
+        }
+
+        // Draw the number centered in the cell
+        DrawText(num, cell.x + ((CELL_SIZE - tw) / 2), cell.y + ((CELL_SIZE - 20) / 2), 20, text_color);
+      }
+    }
+  }
+
+  // Bold lines for 3x3 sub-grids
+  for (int i = 0; i <= GRID_SIZE; i++) {
+    // every 3rd line is thicker
+    int thickness = (i % SUB_GRID_SIZE == 0)? 3 : 1;
+
+    // Vertical
+    DrawLineEx((Vector2) {grid_x + (i * CELL_SIZE), grid_y}, (Vector2) {grid_x + (i * CELL_SIZE), grid_y + (GRID_SIZE * CELL_SIZE)}, thickness, BLACK);
+
+    // Horizontal
+    DrawLineEx((Vector2) {grid_x, grid_y + (i * CELL_SIZE)}, (Vector2) {grid_x + (GRID_SIZE * CELL_SIZE), grid_y + (i * CELL_SIZE)}, thickness, BLACK);
+  }
+
+  // Message if current selection is wrong
+  if (selected_row != -1 && selected_column != -1) {
+    struct Cell *cell = &grid[selected_row][selected_column];
+    if (!cell->is_fixed && cell->value != 0 && !cell->is_correct) {
+      DrawText("Incorrect move!", grid_x, grid_y + (GRID_SIZE * CELL_SIZE) + 10, 20, RED);
+    }
+  }
+
+  // Show mistakes at top center
+  char mistakes_text[32];
+  snprintf(mistakes_text, sizeof(mistakes_text), "Mistakes: %d/3", player->mistakes);
+  int mtw = MeasureText(mistakes_text, 20);
+  DrawText(mistakes_text,
+      grid_x + (GRID_SIZE * CELL_SIZE - mtw) / 2, // centered over grid
+      grid_y - 26,                                // just above grid
+      20,
+      RED);
+}

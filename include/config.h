@@ -4,12 +4,24 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
+#include <string.h>
 #include "./raylib.h"
 
 #define GAME_NAME "Sudoku Game"
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
+
+#define GRID_SIZE 9
+#define SUB_GRID_SIZE 3
+#define CELL_SIZE 40
+
+#define CELLS_TO_REMOVE_EASY 20
+#define CELLS_TO_REMOVE_MEDIUM 40
+#define CELLS_TO_REMOVE_HARD 60
+
+#define SOLUTIONS_FILE "../data/solution.txt"
 
 #define GAME_ICON_X_POSITION (WINDOW_WIDTH - game_icon_texture.width - 10)
 #define GAME_ICON_Y_POSITION 10
@@ -49,6 +61,12 @@ struct InputBox {
   struct ValidationResult validation; // Structure to track if the input field is valid or not, with an error message
 };
 
+struct Cell {
+  int value;         // 0 = empty
+  bool is_fixed;    // true if included in the puzzle
+  bool is_correct; // track if player's entry is correct
+};
+
 // Function used to initialize the window and game settings
 extern void InitializeWindowAndSettings();
 
@@ -60,6 +78,9 @@ extern void ResetInputBoxes(struct InputBox *name_box, struct InputBox *password
 
 // Function used to draw a spinning trail effect (like a login/loading spinner)
 extern void DrawSpinner(Vector2 center, float radius, int trail_count, float circle_size, Color color, float time);
+
+// Function used to save a given sudoku grid into a file
+extern void SaveSudokuGrid(struct Cell grid[GRID_SIZE][GRID_SIZE], const char *file_path);
 
 // Function used to close the window and clean up resources
 extern void CloseWindowAndCleanUp();

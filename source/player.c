@@ -10,7 +10,7 @@ struct Player *CreatePlayer() {
     return NULL;
   }
 
-  // Allocate memory for the player's attributes
+  // Initialize and allocate memory for the player's attributes
   player->name = (char *) calloc(MAX_NAME_LENGTH + 1, sizeof(char));
   player->password = (char *) calloc(MAX_PASSWORD_LENGTH + 1, sizeof(char));
 

@@ -6,6 +6,7 @@
 #include "../include/menu.h"
 #include "../include/difficulty.h"
 #include "../include/tutorial.h"
+#include "../include/play.h"
 
 int main() {
   InitializeWindowAndSettings();
@@ -24,7 +25,8 @@ int main() {
   // Load an image texture
   Texture2D game_icon_texture = LoadResizedTexture("../assets/icons/game_icon.png", WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8),
             required_image_texture = LoadResizedTexture("../assets/images/required.png", 28, 28),
-            back_image_texture = LoadResizedTexture("../assets/images/back.png", 28, 28);
+            back_image_texture = LoadResizedTexture("../assets/images/back.png", 28, 28),
+            pause_image_texture = LoadResizedTexture("../assets/images/back.png", 28, 28);
 
   // Create a player pointer (NULL initially)
   struct Player *player = NULL;
@@ -93,17 +95,7 @@ int main() {
         break;
 
       case PLAYING:
-        switch (game_difficulty) {
-          case EASY:
-            DrawText("Easy", 0, 0, 20, RED);
-            break;
-          case MEDIUM:
-            DrawText("Medium", 0, 0, 20, RED);
-            break;
-          case HARD:
-            DrawText("Hard", 0, 0, 20, RED);
-            break;
-        }
+        HandlePlayingProcess(player, &game_state, game_difficulty, pause_image_texture);
         break;
 
       case LOADING:
@@ -138,6 +130,7 @@ int main() {
   UnloadTexture(required_image_texture);
   UnloadTexture(game_icon_texture);
   UnloadTexture(back_image_texture);
+  UnloadTexture(pause_image_texture);
 
   CloseWindowAndCleanUp();
 

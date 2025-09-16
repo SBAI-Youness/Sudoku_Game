@@ -232,3 +232,59 @@ void ProcessDifficultyInput(enum GAME_STATE *game_state, enum GAME_DIFFICULTY *g
     }
   }
 }
+
+void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID_SIZE], int *selected_row, int *selected_column, bool *last_move_correct) {
+  // Get the current mouse position
+  Vector2 mouse = GetMousePosition();
+
+  // Select a cell with mouse
+  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    // Calculate top-left offset so the grid is centered on the screen
+    int grid_x = (WINDOW_WIDTH - (GRID_SIZE * CELL_SIZE)) / 2,
+        grid_y = (WINDOW_HEIGHT - (GRID_SIZE * CELL_SIZE)) / 2;
+
+    // Translate mouse position into grid coordinates
+    int col = (mouse.x - grid_x) / CELL_SIZE,
+        row = (mouse.y - grid_y) / CELL_SIZE;
+
+    // Check if the click is inside the valid grid area
+    if ((row >= 0 && row < GRID_SIZE) && (col >= 0 && col < GRID_SIZE)) {
+      *selected_row = row;
+      *selected_column = col;
+    }
+  }
+
+  // Make sure a cell is selected
+  if (*selected_row != -1 && *selected_column != -1) {
+    struct Cell *cell = &grid[*selected_row][*selected_column];
+
+    // Only allow changes if the cell is not fixed
+    if (cell->is_fixed == false) {
+      *last_move_correct = true;
+
+      // Input numbers 1–9
+      for (int key = KEY_ONE; key <= KEY_NINE; key++) {
+        if (IsKeyPressed(key)) {
+          int value = key - KEY_ZERO;
+          cell->value = value;
+          bool was_correct = cell->is_correct;
+
+          if (IsMoveCorrect(grid, *selected_row, *selected_column, value)) {
+            cell->is_correct = true;
+          } else {
+            cell->is_correct = false;
+            if (was_correct == false) { // only count new mistakes
+              player->mistakes++;
+            }
+          }
+        }
+
+        // Erase with Backspace or 0
+        if (IsKeyPressed(KEY_BACKSPACE) || IsKeyPressed(KEY_ZERO)) {
+          cell->value = 0;
+          cell->is_correct = true; // empty is neutral = "not wrong"
+        }
+      }
+    }
+  }
+}

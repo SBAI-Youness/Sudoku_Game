@@ -45,6 +45,30 @@ void DrawSpinner(Vector2 center, float radius, int trail_count, float circle_siz
   }
 }
 
+void SaveSudokuGrid(struct Cell grid[GRID_SIZE][GRID_SIZE], const char *file_path) {
+  // Open the file in write mode ("w" = overwrite if exists)
+  FILE *file = fopen(file_path, "w");
+
+  // Check if fopen failed or not
+  if (file == NULL) {
+    return;
+  }
+
+  // Loop through every cell in the Sudoku grid
+  for (int row = 0; row < GRID_SIZE; row++) {
+    for (int column = 0; column < GRID_SIZE; column++) {
+      // Write the cell value followed by a space
+      fprintf(file, "%d ", grid[row][column].value);
+    }
+
+    // After each row, insert a newline
+    fprintf(file, "\n");
+  }
+
+  // Close the file to free resources and flush the buffer
+  fclose(file);
+}
+
 void CloseWindowAndCleanUp() {
   // Close the window and OpenGL context
   CloseWindow();

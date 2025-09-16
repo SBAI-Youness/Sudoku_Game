@@ -18,6 +18,8 @@ struct Player {
   // Player attributes
   char *name;
   char *password;
+  int mistakes;
+  double start_time;
 
   // Player methods
   void (*SetName)(struct Player *self);
