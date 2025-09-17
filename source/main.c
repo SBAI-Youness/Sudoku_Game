@@ -87,7 +87,7 @@ int main() {
         break;
 
       case MODE_MENU:
-        HandleDifficultyProcess(player, &game_state, &game_difficulty, game_icon_texture, back_image_texture);
+        HandleDifficultyProcess(&game_state, &game_difficulty, game_icon_texture, back_image_texture);
         break;
 
       case TUTORIAL:

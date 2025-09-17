@@ -1,6 +1,6 @@
 #include "../include/difficulty.h"
 
-void HandleDifficultyProcess(struct Player *player, enum GAME_STATE *game_state, enum GAME_DIFFICULTY *game_difficulty, Texture2D game_icon_texture, Texture2D back_image_texture) {
+void HandleDifficultyProcess(enum GAME_STATE *game_state, enum GAME_DIFFICULTY *game_difficulty, Texture2D game_icon_texture, Texture2D back_image_texture) {
   // Define the difficulty modes
   const char *difficulty_mode_text[] = { "Easy",
                                          "Medium",

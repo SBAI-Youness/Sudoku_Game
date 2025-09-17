@@ -65,7 +65,7 @@ void HandleGameMenuProcess(struct Player *player, enum GAME_STATE *game_state, T
 void HandleGameMenuAction(struct Player *player, enum GAME_STATE *game_state, int selected_button) {
   switch (selected_button) {
     case 0: // "New Game"
-      player->resume_requested = true;
+      player->resume_requested = false;
       show_no_save_message = false;
       ChangeGameState(game_state, MODE_MENU);
       break;
