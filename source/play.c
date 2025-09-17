@@ -1,6 +1,7 @@
 #include "../include/play.h"
+#include <stdio.h>
 
-void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, enum GAME_DIFFICULTY game_difficulty, Texture2D pause_image_texture) {
+void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, enum GAME_DIFFICULTY *game_difficulty, Texture2D pause_image_texture) {
   static struct Cell grid[GRID_SIZE][GRID_SIZE];
   static bool initialized = false,
               last_move_correct = true;
@@ -11,25 +12,39 @@ void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, en
     // seed random once
     srand((unsigned int)time(NULL));
 
-    // Generate sudoku grid with given difficulty
-    GenerateSudokuGrid(grid, game_difficulty);
+    bool loaded = false;
+    if (player->resume_requested == true) {
+      loaded = LoadGameState(player, game_difficulty, grid);
+    }
 
-    player->mistakes = 0;
-    player->start_time = GetTime();
+    if (loaded == false) {
+      GenerateSudokuGrid(grid, *game_difficulty);
+      player->mistakes = 0;
+      player->start_time = GetTime();
+    }
 
     initialized = true;
   }
 
   ProcessPlayingInput(player, grid, &selected_row, &selected_column, &last_move_correct);
 
-  RenderPlayingPage(player, game_difficulty, pause_image_texture, grid, selected_row, selected_column, last_move_correct);
+  RenderPlayingPage(player, *game_difficulty, pause_image_texture, grid, selected_row, selected_column, last_move_correct);
+
+  // Autosave
+  SaveGameState(player, *game_difficulty, grid);
 
   if (player->mistakes >= 3) {
+    DeleteGameState(player);
     ChangeGameState(game_state, EXIT);
   }
 
   if (is_puzzle_solved(grid) == true) {
+    DeleteGameState(player);
     ChangeGameState(game_state, MAIN_MENU);
+
+    // Reset local state for next entry
+    initialized = false;
+    selected_row = selected_column = -1;
   }
 }
 
@@ -38,7 +53,7 @@ void GenerateSudokuGrid(struct Cell grid[GRID_SIZE][GRID_SIZE], enum GAME_DIFFIC
   FillGrid(grid);
 
   // Step 2: save full solution for later access
-  SaveSudokuGrid(grid, SOLUTIONS_FILE);
+  SaveSudokuGrid(grid, SOLUTION_FILE);
 
   // Step 3: remove cells based on the difficulty
   RemoveCells(grid, game_difficulty);
@@ -167,4 +182,103 @@ void RemoveCells(struct Cell grid[GRID_SIZE][GRID_SIZE], enum GAME_DIFFICULTY ga
       }
     }
   }
+}
+
+static void BuildSavePath(struct Player *player, char out_path[256]) {
+  snprintf(out_path, 256, "%s%s.txt", GAME_STATE_SAVE_DIRECTORY, player->name);
+}
+
+bool SaveGameState(struct Player *player, enum GAME_DIFFICULTY game_difficulty, struct Cell grid[GRID_SIZE][GRID_SIZE]) {
+  char path[256];
+  BuildSavePath(player, path);
+
+  FILE *file = fopen(path, "w");
+
+  if (file == NULL) {
+    return false;
+  }
+
+  fprintf(file, "DIFFICULTY %d\n", (int) game_difficulty);
+  fprintf(file, "MISTAKES %d\n", player->mistakes);
+  double elapsed = GetTime() - player->start_time;
+  fprintf(file, "ELAPSED %.3f\n", elapsed);
+
+  for (int r = 0; r < GRID_SIZE; r++) {
+    for (int c = 0; c < GRID_SIZE; c++) {
+      struct Cell *cell = &grid[r][c];
+
+      fprintf(file, "%d:%d:%d%s", cell->value, (cell->is_fixed)? 1 : 0, (cell->is_correct)? 1 : 0, (c == GRID_SIZE - 1)? "": " ");
+    }
+    fprintf(file, "\n");
+  }
+
+  fclose(file);
+  return true;
+}
+
+bool LoadGameState(struct Player *player, enum GAME_DIFFICULTY *game_difficulty, struct Cell grid[GRID_SIZE][GRID_SIZE]) {
+  char path[256];
+  BuildSavePath(player, path);
+
+  FILE *file = fopen(path, "r");
+
+  if (file == NULL) {
+    return false;
+  }
+
+  int difficulty = 0,
+      mistakes = 0;
+  double saved_elapsed = 0.0;
+
+  if (fscanf(file, "DIFFICULTY %d\n", &difficulty) != 1) {
+    fclose(file);
+    return false;
+  }
+  if (fscanf(file, "MISTAKES %d\n", &mistakes) != 1) {
+    fclose(file);
+    return false;
+  }
+  if (fscanf(file, "ELAPSED %lf\n", &saved_elapsed) != 1) {
+    fclose(file);
+    return false;
+  }
+
+  // Read grid lines
+  for (int r = 0; r < GRID_SIZE; r++) {
+    for (int c = 0; c < GRID_SIZE; c++) {
+      int v, fxd, corr;
+      if (fscanf(file, "%d:%d:%d", &v, &fxd, &corr) != 3) {
+        fclose(file);
+        return false;
+      }
+
+      grid[r][c].value = v;
+      grid[r][c].is_fixed = (fxd != 0);
+      grid[r][c].is_correct = (corr != 0);
+
+      if (c < (GRID_SIZE - 1)) {
+        int ch = fgetc(file);
+
+        if (ch != ' ') {
+          ungetc(ch, file);
+        }
+      }
+    }
+    int ch;
+    while ((ch = fgetc(file)) != '\n' && ch != EOF) {}
+  }
+
+  fclose(file);
+
+  *game_difficulty = (enum GAME_DIFFICULTY) difficulty;
+  player->mistakes = mistakes;
+  player->start_time = GetTime() - saved_elapsed;
+
+  return true;
+}
+
+bool DeleteGameState(struct Player *player) {
+  char path[256];
+  BuildSavePath(player, path);
+  return remove(path) == 0;
 }

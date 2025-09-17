@@ -13,6 +13,9 @@ struct Player *CreatePlayer() {
   // Initialize and allocate memory for the player's attributes
   player->name = (char *) calloc(MAX_NAME_LENGTH + 1, sizeof(char));
   player->password = (char *) calloc(MAX_PASSWORD_LENGTH + 1, sizeof(char));
+  player->mistakes = 0;
+  player->start_time = 0.0;
+  player->resume_requested = false;
 
   // Check if the player's attributes memory allocation was successful
   if (player->name == NULL || player->password == NULL) {

@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include "./config.h"
 
-#define PLAYERS_FILE "../data/players.csv"
+#define PLAYERS_FILE "../data/players/players.csv"
 
 #define MIN_NAME_LENGTH 4
 #define MAX_NAME_LENGTH 10
@@ -20,6 +20,7 @@ struct Player {
   char *password;
   int mistakes;
   double start_time;
+  bool resume_requested;
 
   // Player methods
   void (*SetName)(struct Player *self);

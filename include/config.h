@@ -21,7 +21,8 @@
 #define CELLS_TO_REMOVE_MEDIUM 40
 #define CELLS_TO_REMOVE_HARD 60
 
-#define SOLUTIONS_FILE "../data/solution.txt"
+#define SOLUTION_FILE "../data/solution/solution.txt"
+#define GAME_STATE_SAVE_DIRECTORY "../data/saves/"
 
 #define GAME_ICON_X_POSITION (WINDOW_WIDTH - game_icon_texture.width - 10)
 #define GAME_ICON_Y_POSITION 10

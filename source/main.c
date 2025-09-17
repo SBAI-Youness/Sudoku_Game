@@ -95,7 +95,7 @@ int main() {
         break;
 
       case PLAYING:
-        HandlePlayingProcess(player, &game_state, game_difficulty, pause_image_texture);
+        HandlePlayingProcess(player, &game_state, &game_difficulty, pause_image_texture);
         break;
 
       case LOADING:

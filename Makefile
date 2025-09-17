@@ -3,7 +3,7 @@ OS := $(shell uname -s)
 
 # Compiler and common flags
 CC = gcc
-CFLAGS = -Iinclude
+CFLAGS = -Iinclude -Wall -Werror -Wextra -Wpedantic
 
 # Directories and source files
 SRC := $(wildcard ./source/*.c)
