@@ -307,7 +307,7 @@ void RenderDifficultyPage(Texture2D game_icon_texture, Texture2D back_image_text
   }
 }
 
-void RenderPlayingPage(struct Player *player, enum GAME_DIFFICULTY game_difficulty, Texture2D pause_image_texture, struct Cell grid[GRID_SIZE][GRID_SIZE], int selected_row, int selected_column, bool last_move_correct, bool is_paused, bool paused_at) {
+void RenderPlayingPage(struct Player *player, enum GAME_DIFFICULTY game_difficulty, Texture2D pause_image_texture, struct Cell grid[GRID_SIZE][GRID_SIZE], int selected_row, int selected_column, bool last_move_correct, bool is_paused, double paused_at) {
   // Show difficulty at top-left
   const char *diff_str = "";
   switch (game_difficulty) {
