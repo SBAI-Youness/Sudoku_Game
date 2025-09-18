@@ -26,7 +26,7 @@ int main() {
   Texture2D game_icon_texture = LoadResizedTexture("../assets/icons/game_icon.png", WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8),
             required_image_texture = LoadResizedTexture("../assets/images/required.png", 28, 28),
             back_image_texture = LoadResizedTexture("../assets/images/back.png", 28, 28),
-            pause_image_texture = LoadResizedTexture("../assets/images/back.png", 28, 28);
+            pause_image_texture = LoadResizedTexture("../assets/images/pause.png", 28, 28);
 
   // Create a player pointer (NULL initially)
   struct Player *player = NULL;

@@ -7,6 +7,8 @@ void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, en
               last_move_correct = true;
   static int selected_row = -1,
              selected_column = -1;
+  static bool is_paused = false;
+  static double paused_at = 0.0;
 
   if (initialized == false) {
     // seed random once
@@ -24,27 +26,78 @@ void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, en
     }
 
     initialized = true;
+    is_paused = false;
+    paused_at = 0.0;
   }
 
-  ProcessPlayingInput(player, grid, &selected_row, &selected_column, &last_move_correct);
+  Rectangle pause_button = RenderPauseButton(pause_image_texture);
 
-  RenderPlayingPage(player, *game_difficulty, pause_image_texture, grid, selected_row, selected_column, last_move_correct);
+  if (is_paused == true) {
+    if (paused_at == 0.0) {
+      paused_at = GetTime();
+    }
 
-  // Autosave
-  SaveGameState(player, *game_difficulty, grid);
+    RenderPlayingPage(player, *game_difficulty, pause_image_texture, grid, selected_row, selected_column, last_move_correct, is_paused, paused_at);
 
-  if (player->mistakes >= 3) {
-    DeleteGameState(player);
-    ChangeGameState(game_state, EXIT);
+    // Overlay with buttons
+    Rectangle resume_button, restart_button, main_menu_button;
+    int hovered = -1;
+    RenderPauseOverlayPage(&resume_button, &restart_button, &main_menu_button, &hovered);
+
+    bool restart_requested = false;
+    ProcessPauseOverlayInput(player, game_state, &is_paused, &restart_requested, resume_button, restart_button, main_menu_button);
+
+    if (is_paused == false && paused_at != 0.0) {
+      double paused_duration = GetTime() - paused_at;
+      player->start_time += paused_duration;
+      paused_at = 0.0;
+    }
+
+    if (*game_state != PLAYING) {
+      initialized = false;
+      selected_row = selected_column = -1;
+      is_paused = false;
+      paused_at = 0.0;
+
+      return;
+    }
+
+    if (restart_requested == true) {
+      GenerateSudokuGrid(grid, *game_difficulty);
+      player->mistakes = 0;
+      player->start_time = GetTime();
+      last_move_correct = true;
+      selected_row = selected_column = -1;
+      is_paused = false;
+      paused_at = 0.0;
+    }
+
+    return;
   }
 
-  if (is_puzzle_solved(grid) == true) {
-    DeleteGameState(player);
-    ChangeGameState(game_state, MAIN_MENU);
+  ProcessPlayingInput(player, grid, &selected_row, &selected_column, &last_move_correct, &is_paused, pause_button);
 
-    // Reset local state for next entry
-    initialized = false;
-    selected_row = selected_column = -1;
+  if (is_paused == false) {
+    RenderPlayingPage(player, *game_difficulty, pause_image_texture, grid, selected_row, selected_column, last_move_correct, is_paused, paused_at);
+
+    // Autosave
+    SaveGameState(player, *game_difficulty, grid);
+
+    if (player->mistakes >= 3) {
+      DeleteGameState(player);
+      ChangeGameState(game_state, EXIT);
+    }
+
+    if (is_puzzle_solved(grid) == true) {
+      DeleteGameState(player);
+      ChangeGameState(game_state, MAIN_MENU);
+
+      // Reset local state for next entry
+      initialized = false;
+      selected_row = selected_column = -1;
+      is_paused = false;
+      paused_at = 0.0;
+    }
   }
 }
 

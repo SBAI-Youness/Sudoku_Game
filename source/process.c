@@ -233,9 +233,17 @@ void ProcessDifficultyInput(enum GAME_STATE *game_state, enum GAME_DIFFICULTY *g
   }
 }
 
-void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID_SIZE], int *selected_row, int *selected_column, bool *last_move_correct) {
+void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID_SIZE], int *selected_row, int *selected_column, bool *last_move_correct, bool *is_paused, Rectangle pause_button) {
   // Get the current mouse position
   Vector2 mouse = GetMousePosition();
+
+  if (*is_paused == false && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    if (CheckCollisionPointRec(mouse, pause_button) == true) {
+      *is_paused = true;
+
+      return;
+    }
+  }
 
   // Select a cell with mouse
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
@@ -285,6 +293,24 @@ void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID
           cell->is_correct = true; // empty is neutral = "not wrong"
         }
       }
+    }
+  }
+}
+
+void ProcessPauseOverlayInput(struct Player *player, enum GAME_STATE *game_state, bool *is_paused, bool *restart_requested, Rectangle resume_button, Rectangle restart_button, Rectangle main_menu_button) {
+  Vector2 mouse_position = GetMousePosition();
+
+  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    if (CheckCollisionPointRec(mouse_position, resume_button) == true) {
+      (*is_paused) = false;
+    }
+    else if (CheckCollisionPointRec(mouse_position, restart_button) == true) {
+      (*restart_requested) = true;
+      *is_paused = false;
+    }
+    else if (CheckCollisionPointRec(mouse_position, main_menu_button) == true) {
+      ChangeGameState(game_state, MAIN_MENU);
+      *is_paused = false;
     }
   }
 }

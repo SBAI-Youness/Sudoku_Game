@@ -307,7 +307,7 @@ void RenderDifficultyPage(Texture2D game_icon_texture, Texture2D back_image_text
   }
 }
 
-void RenderPlayingPage(struct Player *player, enum GAME_DIFFICULTY game_difficulty, Texture2D pause_image_texture, struct Cell grid[GRID_SIZE][GRID_SIZE], int selected_row, int selected_column, bool last_move_correct) {
+void RenderPlayingPage(struct Player *player, enum GAME_DIFFICULTY game_difficulty, Texture2D pause_image_texture, struct Cell grid[GRID_SIZE][GRID_SIZE], int selected_row, int selected_column, bool last_move_correct, bool is_paused, bool paused_at) {
   // Show difficulty at top-left
   const char *diff_str = "";
   switch (game_difficulty) {
@@ -327,15 +327,23 @@ void RenderPlayingPage(struct Player *player, enum GAME_DIFFICULTY game_difficul
   int grid_x = (WINDOW_WIDTH - (GRID_SIZE * CELL_SIZE)) / 2,
       grid_y = (WINDOW_HEIGHT - (GRID_SIZE * CELL_SIZE)) / 2;
 
-    double elapsed = GetTime() - player->start_time;
-    int minutes = (int) (elapsed / 60);
-    int seconds = (int) elapsed % 60;
+  double elapsed = 0.0;
 
-    char timer_text[16];
-    snprintf(timer_text, sizeof(timer_text), "%02d:%02d", minutes, seconds);
+  if (is_paused == true && paused_at > 0.0) {
+    elapsed = paused_at - player->start_time;
+  }
+  else {
+    elapsed = GetTime() - player->start_time;
+  }
 
-    int ttw = MeasureText(timer_text, 20);
-    DrawText(timer_text, WINDOW_WIDTH - ttw - 10, 10, 20, DARKBLUE);
+  int minutes = (int) (elapsed / 60);
+  int seconds = (int) elapsed % 60;
+
+  char timer_text[16];
+  snprintf(timer_text, sizeof(timer_text), "%02d:%02d", minutes, seconds);
+
+  int ttw = MeasureText(timer_text, 20);
+  DrawText(timer_text, WINDOW_WIDTH - ttw - 10, 10, 20, DARKBLUE);
 
   // Draw grid cells
   for (int row = 0; row < GRID_SIZE; row++) {
@@ -414,4 +422,48 @@ void RenderPlayingPage(struct Player *player, enum GAME_DIFFICULTY game_difficul
       grid_y - 26,                                // just above grid
       20,
       RED);
+}
+
+Rectangle RenderPauseButton(Texture2D pause_image_texture) {
+  int x = (WINDOW_WIDTH - pause_image_texture.width) / 2;
+  int y = 10;
+  DrawTexture(pause_image_texture, x, y, WHITE);
+  Rectangle pause_button = { x, y, pause_image_texture.width, pause_image_texture.height };
+  return pause_button;
+}
+
+void RenderPauseOverlayPage(Rectangle *resume_button, Rectangle *restart_button, Rectangle *main_menu_button, int *selected_button) {
+  DrawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, (Color){0, 0, 0, 160});
+
+  const char *title = "Paused";
+  int title_font = 40;
+  int title_w = MeasureText(title, title_font);
+  DrawText(title, (WINDOW_WIDTH - title_w) / 2, WINDOW_HEIGHT / 4, title_font, RAYWHITE);
+
+  int button_w = 220;
+  int button_h = 48;
+  int spacing = 18;
+  int start_y = WINDOW_HEIGHT / 2 - (button_h * 3 + spacing * 2) / 2;
+  int x = (WINDOW_WIDTH - button_w) / 2;
+
+  *resume_button = (Rectangle){ x, start_y, button_w, button_h };
+  *restart_button = (Rectangle){ x, start_y + button_h + spacing, button_w, button_h };
+  *main_menu_button = (Rectangle){ x, start_y + (button_h + spacing) * 2, button_w, button_h };
+
+  Rectangle buttons[3] = {*resume_button, *restart_button, *main_menu_button};
+  const char *labels[3] = {"Resume", "Restart", "Main Menu"};
+
+  Vector2 mouse = GetMousePosition();
+  for (int i = 0; i < 3; i++) {
+    Color bg = LIGHTGRAY;
+    if (CheckCollisionPointRec(mouse, buttons[i])) {
+      bg = GRAY;
+      if (selected_button != NULL) *selected_button = i;
+    }
+    DrawRectangleRec(buttons[i], bg);
+    DrawRectangleLines((int)buttons[i].x, (int)buttons[i].y, (int)buttons[i].width, (int)buttons[i].height, DARKGRAY);
+
+    int tw = MeasureText(labels[i], 20);
+    DrawText(labels[i], buttons[i].x + (buttons[i].width - tw) / 2, buttons[i].y + (buttons[i].height - 20) / 2, 20, BLACK);
+  }
 }

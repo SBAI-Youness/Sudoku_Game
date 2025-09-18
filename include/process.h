@@ -24,4 +24,6 @@ extern void ProcessTutorialInput(enum GAME_STATE *game_state, Rectangle back_but
 extern void ProcessDifficultyInput(enum GAME_STATE *game_state, enum GAME_DIFFICULTY *game_difficulty, Rectangle difficulty_mode_buttons[], int difficulty_mode_count, int *selected_button, Rectangle back_button);
 
 // Function used to process the player input inside the game
-extern void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID_SIZE], int *selected_row, int *selected_column, bool *last_move_correct);
+extern void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID_SIZE], int *selected_row, int *selected_column, bool *last_move_correct, bool *is_paused, Rectangle pause_button);
+
+extern void ProcessPauseOverlayInput(struct Player *player, enum GAME_STATE *game_state, bool *is_paused, bool *restart_requested, Rectangle resume_button, Rectangle restart_button, Rectangle main_menu_button);
