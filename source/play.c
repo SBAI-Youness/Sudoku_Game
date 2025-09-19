@@ -125,6 +125,15 @@ void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, en
 }
 
 void GenerateSudokuGrid(struct Cell grid[GRID_SIZE][GRID_SIZE], enum GAME_DIFFICULTY game_difficulty) {
+  // Reset the grid to a clean state before generating a new puzzle
+  for (int r = 0; r < GRID_SIZE; r++) {
+    for (int c = 0; c < GRID_SIZE; c++) {
+      grid[r][c].value = 0;
+      grid[r][c].is_fixed = false;
+      grid[r][c].is_correct = true; // neutral at start
+    }
+  }
+
   // Step 1: generate a valid full grid
   FillGrid(grid);
 
@@ -206,9 +215,21 @@ bool IsMoveCorrect(struct Cell grid[GRID_SIZE][GRID_SIZE], int row, int column, 
 }
 
 bool is_puzzle_solved(struct Cell grid[GRID_SIZE][GRID_SIZE]) {
-  for (size_t row = 0; row < GRID_SIZE; row++) {
-    for (size_t col = 0; col < GRID_SIZE; col++) {
-      if (grid[row][col].value == 0) {
+  // All cells must be filled and respect Sudoku constraints
+  for (int row = 0; row < GRID_SIZE; row++) {
+    for (int col = 0; col < GRID_SIZE; col++) {
+      int value = grid[row][col].value;
+      if (value == 0) {
+        return false;
+      }
+
+      // Temporarily clear the cell and validate placement
+      int backup = grid[row][col].value;
+      grid[row][col].value = 0;
+      bool valid = IsSafe(grid, row, col, value);
+      grid[row][col].value = backup;
+
+      if (valid == false) {
         return false;
       }
     }
@@ -246,15 +267,17 @@ void RemoveCells(struct Cell grid[GRID_SIZE][GRID_SIZE], enum GAME_DIFFICULTY ga
            row = pos / GRID_SIZE,
            col = pos % GRID_SIZE;
 
-    grid[row][col].value = 0;     // clear number
+    grid[row][col].value = 0;        // clear number
     grid[row][col].is_fixed = false; // mark as editable
+    grid[row][col].is_correct = true; // empty = neutral
   }
 
-  // mark the remaining non-empty cells as fixed
+  // mark the remaining non-empty cells as fixed and correct
   for (int r = 0; r < GRID_SIZE; r++) {
     for (int c = 0; c < GRID_SIZE; c++) {
       if (grid[r][c].value != 0) {
         grid[r][c].is_fixed = true;
+        grid[r][c].is_correct = true;
       }
     }
   }

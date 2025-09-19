@@ -281,7 +281,8 @@ void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID
             cell->is_correct = true;
           } else {
             cell->is_correct = false;
-            if (was_correct == false) { // only count new mistakes
+            // Count a mistake only on transition from correct->wrong
+            if (was_correct == true && cell->is_correct == false) {
               player->mistakes++;
             }
           }
