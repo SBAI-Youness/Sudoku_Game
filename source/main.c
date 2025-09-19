@@ -7,6 +7,7 @@
 #include "../include/difficulty.h"
 #include "../include/tutorial.h"
 #include "../include/play.h"
+#include "../include/result.h"
 
 int main() {
   InitializeWindowAndSettings();
@@ -108,6 +109,10 @@ int main() {
           ChangeGameState(&game_state, MAIN_MENU);
         }
 
+        break;
+
+      case RESULT:
+        HandleResultProcess(&game_state, &game_difficulty);
         break;
 
       case EXIT:

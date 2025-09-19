@@ -467,3 +467,123 @@ void RenderPauseOverlayPage(Rectangle *resume_button, Rectangle *restart_button,
     DrawText(labels[i], buttons[i].x + (buttons[i].width - tw) / 2, buttons[i].y + (buttons[i].height - 20) / 2, 20, BLACK);
   }
 }
+
+void RenderResultPage(bool did_win, double elapsed_seconds, enum GAME_DIFFICULTY game_difficulty, struct Cell final_grid[GRID_SIZE][GRID_SIZE], struct Cell (*solution_grid)[GRID_SIZE], Rectangle *play_again_button, Rectangle *main_menu_button) {
+  const char *title = did_win ? "You Won!" : "You Lost";
+  Color title_color = did_win ? GREEN : RED;
+
+  int title_font = 40;
+  int title_w = MeasureText(title, title_font);
+  DrawText(title, (WINDOW_WIDTH - title_w) / 2, 40, title_font, title_color);
+
+  // Difficulty text
+  const char *diff_str = "";
+  switch (game_difficulty) {
+    case EASY: diff_str = "Difficulty: Easy"; break;
+    case MEDIUM: diff_str = "Difficulty: Medium"; break;
+    case HARD: diff_str = "Difficulty: Hard"; break;
+  }
+  DrawText(diff_str, 20, 100, 20, DARKGRAY);
+
+  // Time text
+  int minutes = (int)(elapsed_seconds / 60);
+  int seconds = (int)elapsed_seconds % 60;
+  char time_text[32];
+  snprintf(time_text, sizeof(time_text), "Time: %02d:%02d", minutes, seconds);
+  int ttw = MeasureText(time_text, 20);
+  DrawText(time_text, WINDOW_WIDTH - ttw - 20, 100, 20, DARKBLUE);
+
+  // Compute grid positions (side-by-side if lost; single if win)
+  int grid_pixel = GRID_SIZE * CELL_SIZE;
+  int grid_y = 150;
+
+  if (did_win == true) {
+    int grid_x = (WINDOW_WIDTH - grid_pixel) / 2;
+
+    // Draw final grid
+    for (int row = 0; row < GRID_SIZE; row++) {
+      for (int col = 0; col < GRID_SIZE; col++) {
+        Rectangle cell = (Rectangle){ grid_x + col * CELL_SIZE, grid_y + row * CELL_SIZE, CELL_SIZE, CELL_SIZE };
+        DrawRectangleRec(cell, RAYWHITE);
+        DrawRectangleLinesEx(cell, 1, BLACK);
+
+        if (final_grid[row][col].value != 0) {
+          char num[2];
+          snprintf(num, 2, "%d", final_grid[row][col].value);
+          int tw = MeasureText(num, 20);
+          Color color = final_grid[row][col].is_fixed ? BLACK : BLUE;
+          DrawText(num, cell.x + (CELL_SIZE - tw) / 2, cell.y + (CELL_SIZE - 20) / 2, 20, color);
+        }
+      }
+    }
+
+    // Bold subgrid lines
+    for (int i = 0; i <= GRID_SIZE; i++) {
+      int thickness = (i % SUB_GRID_SIZE == 0) ? 3 : 1;
+      DrawLineEx((Vector2){grid_x + i * CELL_SIZE, grid_y}, (Vector2){grid_x + i * CELL_SIZE, grid_y + grid_pixel}, thickness, BLACK);
+      DrawLineEx((Vector2){grid_x, grid_y + i * CELL_SIZE}, (Vector2){grid_x + grid_pixel, grid_y + i * CELL_SIZE}, thickness, BLACK);
+    }
+  } else {
+    // Lost: show only the solution grid centered
+    bool has_solution = (solution_grid != NULL);
+
+    if (!has_solution) {
+      const char *msg = "Solution not available";
+      int mw = MeasureText(msg, 20);
+      DrawText(msg, (WINDOW_WIDTH - mw) / 2, grid_y + grid_pixel / 2 - 10, 20, RED);
+    } else {
+      int grid_x = (WINDOW_WIDTH - grid_pixel) / 2;
+
+      const char *label = "Solution";
+      int lw = MeasureText(label, 18);
+      DrawText(label, grid_x + (grid_pixel - lw) / 2, grid_y - 26, 18, DARKGRAY);
+
+      for (int row = 0; row < GRID_SIZE; row++) {
+        for (int col = 0; col < GRID_SIZE; col++) {
+          Rectangle cell = (Rectangle){ grid_x + col * CELL_SIZE, grid_y + row * CELL_SIZE, CELL_SIZE, CELL_SIZE };
+          DrawRectangleRec(cell, RAYWHITE);
+          DrawRectangleLinesEx(cell, 1, BLACK);
+
+          if (solution_grid[row][col].value != 0) {
+            char num[2]; snprintf(num, 2, "%d", solution_grid[row][col].value);
+            int tw = MeasureText(num, 20);
+            // Highlight cells that differ from player's entries in GREEN; otherwise BLACK
+            Color scolor = (final_grid[row][col].value != solution_grid[row][col].value) ? GREEN : BLACK;
+            DrawText(num, cell.x + (CELL_SIZE - tw) / 2, cell.y + (CELL_SIZE - 20) / 2, 20, scolor);
+          }
+        }
+      }
+
+      // Bold subgrid lines
+      for (int i = 0; i <= GRID_SIZE; i++) {
+        int thickness = (i % SUB_GRID_SIZE == 0) ? 3 : 1;
+        DrawLineEx((Vector2){grid_x + i * CELL_SIZE, grid_y}, (Vector2){grid_x + i * CELL_SIZE, grid_y + grid_pixel}, thickness, BLACK);
+        DrawLineEx((Vector2){grid_x, grid_y + i * CELL_SIZE}, (Vector2){grid_x + grid_pixel, grid_y + i * CELL_SIZE}, thickness, BLACK);
+      }
+    }
+  }
+
+  // Buttons aligned at bottom center
+  int button_w = 200;
+  int button_h = 48;
+  int spacing = 20;
+  int total = button_w * 2 + spacing;
+  int x = (WINDOW_WIDTH - total) / 2;
+  int y = WINDOW_HEIGHT - button_h - 30;
+
+  *play_again_button = (Rectangle){ x, y, button_w, button_h };
+  *main_menu_button = (Rectangle){ x + button_w + spacing, y, button_w, button_h };
+
+  Vector2 mouse = GetMousePosition();
+  Rectangle buttons[2] = { *play_again_button, *main_menu_button };
+  const char *labels[2] = { "Play Again", "Main Menu" };
+
+  for (int i = 0; i < 2; i++) {
+    bool hover = CheckCollisionPointRec(mouse, buttons[i]);
+    Color bg = hover ? (Color){ 173, 216, 230, 255 } : BLUE;
+    DrawRectangleRec(buttons[i], bg);
+    DrawRectangleLines((int)buttons[i].x, (int)buttons[i].y, (int)buttons[i].width, (int)buttons[i].height, DARKGRAY);
+    int tw = MeasureText(labels[i], 20);
+    DrawText(labels[i], buttons[i].x + (buttons[i].width - tw) / 2, buttons[i].y + (buttons[i].height - 20) / 2, 20, BLACK);
+  }
+}

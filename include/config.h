@@ -41,6 +41,7 @@ enum GAME_STATE {
   TUTORIAL,
   PLAYING,
   LOADING,
+  RESULT,
   EXIT
 };
 
@@ -68,6 +69,16 @@ struct Cell {
   bool is_correct; // track if player's entry is correct
 };
 
+// Persisted result context between states
+struct ResultContext {
+  bool did_win;
+  double elapsed_seconds;
+  enum GAME_DIFFICULTY difficulty;
+  struct Cell final_grid[GRID_SIZE][GRID_SIZE];
+};
+
+extern struct ResultContext g_result;
+
 // Function used to initialize the window and game settings
 extern void InitializeWindowAndSettings();
 
@@ -82,6 +93,9 @@ extern void DrawSpinner(Vector2 center, float radius, int trail_count, float cir
 
 // Function used to save a given sudoku grid into a file
 extern void SaveSudokuGrid(struct Cell grid[GRID_SIZE][GRID_SIZE], const char *file_path);
+
+// Function to load the saved full solution
+extern bool LoadSolutionGrid(struct Cell grid[GRID_SIZE][GRID_SIZE], const char *file_path);
 
 // Function used to close the window and clean up resources
 extern void CloseWindowAndCleanUp();

@@ -85,12 +85,35 @@ void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, en
 
     if (player->mistakes >= 3) {
       DeleteGameState(player);
-      ChangeGameState(game_state, EXIT);
+      // Populate result context for LOSS
+      g_result.did_win = false;
+      g_result.difficulty = *game_difficulty;
+      double elapsed = GetTime() - player->start_time;
+      g_result.elapsed_seconds = elapsed;
+      for (int r = 0; r < GRID_SIZE; r++)
+        for (int c = 0; c < GRID_SIZE; c++)
+          g_result.final_grid[r][c] = grid[r][c];
+      ChangeGameState(game_state, RESULT);
+
+      // Reset local state for next entry
+      initialized = false;
+      selected_row = selected_column = -1;
+      is_paused = false;
+      paused_at = 0.0;
+      return;
     }
 
     if (is_puzzle_solved(grid) == true) {
       DeleteGameState(player);
-      ChangeGameState(game_state, MAIN_MENU);
+      // Populate result context for WIN
+      g_result.did_win = true;
+      g_result.difficulty = *game_difficulty;
+      double elapsed = GetTime() - player->start_time;
+      g_result.elapsed_seconds = elapsed;
+      for (int r = 0; r < GRID_SIZE; r++)
+        for (int c = 0; c < GRID_SIZE; c++)
+          g_result.final_grid[r][c] = grid[r][c];
+      ChangeGameState(game_state, RESULT);
 
       // Reset local state for next entry
       initialized = false;

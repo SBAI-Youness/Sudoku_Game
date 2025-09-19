@@ -29,3 +29,6 @@ extern void RenderPlayingPage(struct Player *player, enum GAME_DIFFICULTY game_d
 extern Rectangle RenderPauseButton(Texture2D pause_image_texture);
 
 extern void RenderPauseOverlayPage(Rectangle *resume_button, Rectangle *restart_button, Rectangle *main_menu_button, int *selected_button);
+
+// Function used to render the result page
+extern void RenderResultPage(bool did_win, double elapsed_seconds, enum GAME_DIFFICULTY game_difficulty, struct Cell final_grid[GRID_SIZE][GRID_SIZE], struct Cell (*solution_grid)[GRID_SIZE], Rectangle *play_again_button, Rectangle *main_menu_button);

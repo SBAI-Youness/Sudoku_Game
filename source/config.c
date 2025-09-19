@@ -1,5 +1,7 @@
 #include "../include/config.h"
 
+struct ResultContext g_result = {0};
+
 void InitializeWindowAndSettings() {
   // Initialize the window with the specified width, height, and game name
   InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
@@ -67,6 +69,30 @@ void SaveSudokuGrid(struct Cell grid[GRID_SIZE][GRID_SIZE], const char *file_pat
 
   // Close the file to free resources and flush the buffer
   fclose(file);
+}
+
+bool LoadSolutionGrid(struct Cell grid[GRID_SIZE][GRID_SIZE], const char *file_path) {
+  FILE *file = fopen(file_path, "r");
+
+  if (file == NULL) {
+    return false;
+  }
+
+  for (int row = 0; row < GRID_SIZE; row++) {
+    for (int col = 0; col < GRID_SIZE; col++) {
+      int value = 0;
+      if (fscanf(file, "%d", &value) != 1) {
+        fclose(file);
+        return false;
+      }
+      grid[row][col].value = value;
+      grid[row][col].is_fixed = true;
+      grid[row][col].is_correct = true;
+    }
+  }
+
+  fclose(file);
+  return true;
 }
 
 void CloseWindowAndCleanUp() {

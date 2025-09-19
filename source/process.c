@@ -314,3 +314,20 @@ void ProcessPauseOverlayInput(struct Player *player, enum GAME_STATE *game_state
     }
   }
 }
+
+void ProcessResultInput(enum GAME_STATE *game_state, Rectangle play_again_button, Rectangle main_menu_button, bool *play_again_clicked, bool *main_menu_clicked) {
+  Vector2 mouse = GetMousePosition();
+
+  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
+    if (CheckCollisionPointRec(mouse, play_again_button) == true) {
+      *play_again_clicked = true;
+    }
+    else if (CheckCollisionPointRec(mouse, main_menu_button) == true) {
+      *main_menu_clicked = true;
+    }
+  }
+
+  if (IsKeyPressed(KEY_ENTER) == true) {
+    *play_again_clicked = true;
+  }
+}
