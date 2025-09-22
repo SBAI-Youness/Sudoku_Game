@@ -19,8 +19,7 @@ struct Player *CreatePlayer() {
 
   // Check if the player's attributes memory allocation was successful
   if (player->name == NULL || player->password == NULL) {
-    TraceLog(LOG_ERROR,
-             "Failed to allocate memory for the player's attributes!");
+    TraceLog(LOG_ERROR, "Failed to allocate memory for the player's attributes!");
     player->FreePlayer(player);
     return NULL;
   }
@@ -59,7 +58,7 @@ void SetName(struct Player *self) {
 }
 
 void ValidateNameInRealTime(const char *name,
-                            struct ValidationResult *name_validation) {
+    struct ValidationResult *name_validation) {
   name_validation->isValid = true;
   name_validation->error_message = NULL;
 
@@ -86,8 +85,7 @@ void ValidateNameInRealTime(const char *name,
 
   if (ContainsOnlyAllowedChars(name) == false) {
     name_validation->isValid = false;
-    name_validation->error_message = "Name can only contain authorized "
-                                     "letters, numbers and special characters";
+    name_validation->error_message = "Name can only contain authorized letters, numbers and special characters";
   }
 }
 
@@ -111,7 +109,7 @@ void SetPassword(struct Player *self) {
 }
 
 void ValidatePasswordInRealTime(const char *password,
-                                struct ValidationResult *password_validation) {
+    struct ValidationResult *password_validation) {
   password_validation->isValid = true;
   password_validation->error_message = NULL;
 
@@ -123,27 +121,24 @@ void ValidatePasswordInRealTime(const char *password,
   if (HasNoLeadingOrTrailingSpaces(password) == false) {
     password_validation->isValid = false;
     password_validation->error_message =
-        "Password cannot begin or end with a space";
+      "Password cannot begin or end with a space";
   }
 
   if (HasNoConsecutiveSpaces(password) == false) {
     password_validation->isValid = false;
     password_validation->error_message =
-        "Password cannot contain consecutive spaces";
+      "Password cannot contain consecutive spaces";
   }
 
   if (HasValidLength(password, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH) ==
       false) {
     password_validation->isValid = false;
-    password_validation->error_message = "Password must contain between " STR(
-        MIN_PASSWORD_LENGTH) " and " STR(MAX_PASSWORD_LENGTH) " characters";
+    password_validation->error_message = "Password must contain between " STR(MIN_PASSWORD_LENGTH) " and " STR(MAX_PASSWORD_LENGTH) " characters";
   }
 
   if (ContainsOnlyAllowedChars(password) == false) {
     password_validation->isValid = false;
-    password_validation->error_message =
-        "Password can only contain authorized letters, numbers and special "
-        "characters";
+    password_validation->error_message = "Password can only contain authorized letters, numbers and special characters";
   }
 }
 
@@ -154,8 +149,7 @@ bool ContainsOnlyAllowedChars(const char *str) {
   for (size_t i = 0; str[i] != '\0'; i++) {
     if (str[i] >= 32 && str[i] <= 126) {
       // Check if the character is a letter, number, or legal special character
-      if (!isalnum(str[i]) &&
-          strchr(ALLOWED_SPECIAL_CHARACTERS, str[i]) == NULL)
+      if (!isalnum(str[i]) && strchr(ALLOWED_SPECIAL_CHARACTERS, str[i]) == NULL)
         return false;
     } else
       return false;
