@@ -357,6 +357,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 👤 Authors
 
 **Youness SBAI** - *Lead Developer* - [GitHub Profile](https://github.com/SBAI-Youness)
+
 **403F2E** - *Collaborator* - [GitHub Profile](https://github.com/403f2e)
 
 ---
