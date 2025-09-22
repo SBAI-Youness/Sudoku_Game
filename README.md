@@ -28,7 +28,7 @@
 - [🎨 Customization](#-customization)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
-- [👤 Author](#-author)
+- [👤 Authors](#-authors)
 
 ---
 
@@ -354,13 +354,13 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## 👤 Author
+## 👤 Authors
 
-**Youness SBAI** - [GitHub Profile](https://github.com/SBAI-Youness)
+**Youness SBAI** - *Lead Developer* - [GitHub Profile](https://github.com/SBAI-Youness)
+**403F2E** - *Collaborator* - [GitHub Profile](https://github.com/403f2e)
 
 ---
 
 <div align="center">
   <p><strong>⭐ Star this repository if you found it helpful!</strong></p>
-  <p>Made with ❤️ by SBAI</p>
 </div>
