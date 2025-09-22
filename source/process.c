@@ -275,16 +275,12 @@ void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID
         if (IsKeyPressed(key)) {
           int value = key - KEY_ZERO;
           cell->value = value;
-          bool was_correct = cell->is_correct;
 
           if (IsMoveCorrect(*selected_row, *selected_column, value)) {
             cell->is_correct = true;
           } else {
             cell->is_correct = false;
-            // Count a mistake only on transition from correct->wrong
-            if (was_correct == true && cell->is_correct == false) {
-              player->mistakes++;
-            }
+            player->mistakes++;
           }
         }
 
