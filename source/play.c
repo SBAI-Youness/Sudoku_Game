@@ -37,7 +37,7 @@ void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, en
       paused_at = GetTime();
     }
 
-    RenderPlayingPage(player, *game_difficulty, pause_image_texture, grid, selected_row, selected_column, last_move_correct, is_paused, paused_at);
+    RenderPlayingPage(player, *game_difficulty, grid, selected_row, selected_column, last_move_correct, is_paused, paused_at);
 
     // Overlay with buttons
     Rectangle resume_button, restart_button, main_menu_button;
@@ -45,7 +45,7 @@ void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, en
     RenderPauseOverlayPage(&resume_button, &restart_button, &main_menu_button, &hovered);
 
     bool restart_requested = false;
-    ProcessPauseOverlayInput(player, game_state, &is_paused, &restart_requested, resume_button, restart_button, main_menu_button);
+    ProcessPauseOverlayInput(game_state, &is_paused, &restart_requested, resume_button, restart_button, main_menu_button);
 
     if (is_paused == false && paused_at != 0.0) {
       double paused_duration = GetTime() - paused_at;
@@ -78,7 +78,7 @@ void HandlePlayingProcess(struct Player *player, enum GAME_STATE *game_state, en
   ProcessPlayingInput(player, grid, &selected_row, &selected_column, &last_move_correct, &is_paused, pause_button);
 
   if (is_paused == false) {
-    RenderPlayingPage(player, *game_difficulty, pause_image_texture, grid, selected_row, selected_column, last_move_correct, is_paused, paused_at);
+    RenderPlayingPage(player, *game_difficulty, grid, selected_row, selected_column, last_move_correct, is_paused, paused_at);
 
     // Autosave
     SaveGameState(player, *game_difficulty, grid);
@@ -201,17 +201,12 @@ bool IsSafe(struct Cell grid[GRID_SIZE][GRID_SIZE], int row, int column, int num
   return true; // Number is valid
 }
 
-bool IsMoveCorrect(struct Cell grid[GRID_SIZE][GRID_SIZE], int row, int column, int number) {
-  // Temporarily clear the cell
-  int backup = grid[row][column].value;
-  grid[row][column].value = 0;
+bool IsMoveCorrect(int row, int column, int number) {
+  struct Cell solution[GRID_SIZE][GRID_SIZE];
 
-  bool valid = IsSafe(grid, row, column, number);
+  LoadSolutionGrid(solution, SOLUTION_FILE);
 
-  // Restore the value
-  grid[row][column].value = backup;
-
-  return valid;
+  return solution[row][column].value == number;
 }
 
 bool is_puzzle_solved(struct Cell grid[GRID_SIZE][GRID_SIZE]) {

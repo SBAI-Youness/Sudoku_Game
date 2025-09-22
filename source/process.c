@@ -277,7 +277,7 @@ void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID
           cell->value = value;
           bool was_correct = cell->is_correct;
 
-          if (IsMoveCorrect(grid, *selected_row, *selected_column, value)) {
+          if (IsMoveCorrect(*selected_row, *selected_column, value)) {
             cell->is_correct = true;
           } else {
             cell->is_correct = false;
@@ -298,7 +298,7 @@ void ProcessPlayingInput(struct Player *player, struct Cell grid[GRID_SIZE][GRID
   }
 }
 
-void ProcessPauseOverlayInput(struct Player *player, enum GAME_STATE *game_state, bool *is_paused, bool *restart_requested, Rectangle resume_button, Rectangle restart_button, Rectangle main_menu_button) {
+void ProcessPauseOverlayInput(enum GAME_STATE *game_state, bool *is_paused, bool *restart_requested, Rectangle resume_button, Rectangle restart_button, Rectangle main_menu_button) {
   Vector2 mouse_position = GetMousePosition();
 
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {
@@ -316,7 +316,7 @@ void ProcessPauseOverlayInput(struct Player *player, enum GAME_STATE *game_state
   }
 }
 
-void ProcessResultInput(enum GAME_STATE *game_state, Rectangle play_again_button, Rectangle main_menu_button, bool *play_again_clicked, bool *main_menu_clicked) {
+void ProcessResultInput(Rectangle play_again_button, Rectangle main_menu_button, bool *play_again_clicked, bool *main_menu_clicked) {
   Vector2 mouse = GetMousePosition();
 
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true) {

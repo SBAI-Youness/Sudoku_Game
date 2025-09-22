@@ -17,7 +17,7 @@ extern bool FillGrid(struct Cell grid[GRID_SIZE][GRID_SIZE]);
 extern bool IsSafe(struct Cell grid[GRID_SIZE][GRID_SIZE], int row, int column, int number);
 
 // Function used to check if the player's move is correct or not
-extern bool IsMoveCorrect(struct Cell grid[GRID_SIZE][GRID_SIZE], int row, int column, int number);
+extern bool IsMoveCorrect(int row, int column, int number);
 
 // Function used to check if the puzzle was solved or not
 extern bool is_puzzle_solved(struct Cell grid[GRID_SIZE][GRID_SIZE]);
